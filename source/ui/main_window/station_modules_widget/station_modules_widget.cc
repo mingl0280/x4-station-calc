@@ -137,14 +137,14 @@ StationModulesWidget::StationModulesWidget(QAction *       statusAction,
 
     // Load modules
     this->loadStationModules();
-    for (auto &resource : m_resources) {
+    for (const auto &resource : m_resources) {
         m_comboByResource->insertItem(-1, "", resource);
     }
 
-    for (auto &product : m_products) {
+    for (const auto &product : m_products) {
         m_comboByProduction->insertItem(-1, "", product);
     }
-    for (auto &race : m_races) {
+    for (const auto &race : m_races) {
         m_comboByRaces->insertItem(-1, "", race);
     }
 

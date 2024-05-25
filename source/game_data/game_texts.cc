@@ -14,10 +14,11 @@ GameTexts::GameTexts(::std::shared_ptr<GameVFS>             vfs,
     m_unknowIndex(0)
 {
     QStringList textFiles;
-    QRegularExpression nameFilter(QRegularExpression::anchoredPattern(R"(\\d+-L\\d+\\.xml)"), QRegularExpression::CaseInsensitiveOption);
+    static QRegularExpression nameFilter(R"(\d+-L\d+\.xml$)", QRegularExpression::CaseInsensitiveOption);
 
     // Master files
     ::std::shared_ptr<GameVFS::DirReader> dirReader = vfs->openDir("t");
+
     for (auto iter = dirReader->begin(); iter != dirReader->end(); ++iter) {
         if (iter->type == ::GameVFS::DirReader::EntryType::File
             && nameFilter.match(iter->name).hasMatch()) {
@@ -345,9 +346,9 @@ QVector<GameTexts::TextLink> GameTexts::parseText(QString s)
 {
     QVector<GameTexts::TextLink> ret;
     TextLink                     link;
-    QRegularExpression ignoreExp(R"(\\(.*\\))");
+    static QRegularExpression ignoreExp(R"(\(.*\))");
     //QRegExp                      whiteSpacewExp("\\s");
-    QRegularExpression referenceExp(R"(\\{\\s*(\\d+)\\s*,\\s*(\\d+)\\s*\\})");
+    static QRegularExpression referenceExp(R"(\{\s*(\d+)\s*,\s*(\d+)\s*\})");
     //QRegExp numExp("\\d+");
 
     s.remove(ignoreExp);

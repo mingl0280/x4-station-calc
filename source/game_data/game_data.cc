@@ -199,14 +199,14 @@ bool GameData::checkGamePath(const QString& path,
     QRegularExpression::PatternOption options;
 
 
-    QRegularExpression execFilter(QRegularExpression::anchoredPattern("x4|x4\\.exe"), QRegularExpression::PatternOption::CaseInsensitiveOption);
+    static QRegularExpression execFilter(QRegularExpression::anchoredPattern("x4|x4\\.exe"), QRegularExpression::PatternOption::CaseInsensitiveOption);
 
     //execFilter.setCaseSensitivity(Qt::CaseSensitivity::CaseInsensitive);
-    QRegularExpression catFilter(QRegularExpression::anchoredPattern("\\d+\\.cat"), QRegularExpression::PatternOption::CaseInsensitiveOption);
+    static QRegularExpression catFilter(QRegularExpression::anchoredPattern("\\d+\\.cat"), QRegularExpression::PatternOption::CaseInsensitiveOption);
     //catFilter.setCaseSensitivity(Qt::CaseSensitivity::CaseInsensitive);
-    QRegularExpression extCatFilter(QRegularExpression::anchoredPattern("ext_\\d+\\.cat"), QRegularExpression::PatternOption::CaseInsensitiveOption);
+    static QRegularExpression extCatFilter(QRegularExpression::anchoredPattern("ext_\\d+\\.cat"), QRegularExpression::PatternOption::CaseInsensitiveOption);
     //extCatFilter.setCaseSensitivity(Qt::CaseSensitivity::CaseInsensitive);
-    QRegularExpression datFilter(QRegularExpression::anchoredPattern("\\w+\\.dat"), QRegularExpression::PatternOption::CaseInsensitiveOption);
+    static QRegularExpression datFilter(QRegularExpression::anchoredPattern("\\w+\\.dat"), QRegularExpression::PatternOption::CaseInsensitiveOption);
     //datFilter.setCaseSensitivity(Qt::CaseSensitivity::CaseInsensitive);
 
     // Main
@@ -247,8 +247,7 @@ bool GameData::checkGamePath(const QString& path,
                         if (extCatFilter.match(modFile.fileName()).hasMatch()
                             && !modFile.isDir()) {
                             QString filename = QString("extensions/%1/%2")
-                                .arg(modEntry.fileName())
-                                .arg(modFile.fileName());
+                                                   .arg(modEntry.fileName(), modFile.fileName());
                             qDebug()
                                 << "Found cat file file :" << filename << ".";
                             QString key = filename.left(filename.size() - 4);
@@ -261,8 +260,7 @@ bool GameData::checkGamePath(const QString& path,
                         else if (datFilter.match(modFile.fileName()).hasMatch()
                             && !modFile.isDir()) {
                             QString filename = QString("extensions/%1/%2")
-                                .arg(modEntry.fileName())
-                                .arg(modFile.fileName());
+                                                   .arg(modEntry.fileName(),modFile.fileName());
                             qDebug()
                                 << "Found dat file file :" << filename << ".";
                             QString key = filename.left(filename.size() - 4);

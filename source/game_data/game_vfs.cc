@@ -33,6 +33,8 @@ GameVFS::GameVFS(const QString &                        gamePath,
 
             return;
         }
+        auto large_buf = catFile.readAll();
+        QTextStream cat_stream = QTextStream(large_buf);
 
         quint64 printTm = 0;
         quint64 total   = 0;
@@ -46,16 +48,18 @@ GameVFS::GameVFS(const QString &                        gamePath,
             return;
         }
 
-        setTextFunc(STR("STR_LOADING_CAT_DAT_FILE")
+        setTextFunc((STR("STR_LOADING_CAT_DAT_FILE"))
                         .arg(catDatInfo.cat)
-                        .arg(catDatInfo.dat)
-                        .arg(total)
-                        .arg(datFile.size()));
+                        .arg(catDatInfo.dat, total)
+                        .arg(datFile.size())
+                        );
+
+
 
         // Scan cat file.
-        while (! catFile.atEnd()) {
+        while (! cat_stream.atEnd()) {
             // Get file info
-            QString line = catFile.readLine();
+            QString line = cat_stream.readLine();
             line.remove(QChar('\r'));
             line.remove(QChar('\n'));
             if (line == "") {
@@ -126,9 +130,12 @@ GameVFS::GameVFS(const QString &                        gamePath,
                     new DatFileEntery(splittedPath.back(), datFile.fileName(),
                                       offset, size, splittedLine.back()));
             path += splittedPath.back();
+            /*if (path.endsWith(".ogg") || path.endsWith(".wav") || path.endsWith(".sig") || path.contains("voice-"))
+                continue;
+
             qDebug() << "Packed file loaded from " << catDatInfo.cat << ":"
                      << path << ".";
-
+            */
             {
                 quint64 tm = QDateTime::currentMSecsSinceEpoch();
                 if (tm - printTm > 150) {
