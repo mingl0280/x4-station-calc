@@ -1,11 +1,21 @@
 #include <QtCore/QDebug>
 
+#include "common/xml_loader.h"
 #include <common/xml_loader_context.h>
+
 
 /**
  * @brief		Constructor.
  */
 XMLLoader::Context::Context() {}
+
+XMLLoader::Context::Context(const Context&)
+{
+}
+
+XMLLoader::Context::Context(Context&&)
+{
+}
 
 /**
  * @brief		Create constructor.

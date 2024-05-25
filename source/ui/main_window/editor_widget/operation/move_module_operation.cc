@@ -5,11 +5,11 @@
  */
 EditorWidget::MoveModuleOperation::MoveModuleOperation(
     int groupIndex, int oldIndex, int newIndex, EditorWidget *editorWidget) :
-    EditorWidget::OperationBase<EditorWidget::MoveModuleOperation,
-                                int,
-                                int,
-                                int,
-                                EditorWidget *>(editorWidget),
+    OperationBase<MoveModuleOperation,
+                  int,
+                  int,
+                  int,
+                  EditorWidget*>(editorWidget),
     m_groupIndex(groupIndex), m_oldIndex(oldIndex), m_newIndex(newIndex)
 {
     this->setInitialized();

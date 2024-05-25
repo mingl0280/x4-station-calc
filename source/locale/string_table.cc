@@ -1,12 +1,9 @@
 #include <QtCore/QDebug>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
-#include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
 #include <QtCore/QJsonValue>
 #include <QtCore/QLocale>
-#include <QtCore/QReadLocker>
-#include <QtCore/QWriteLocker>
 
 #include <config.h>
 #include <locale/string_table.h>

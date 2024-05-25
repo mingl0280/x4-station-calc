@@ -1,11 +1,8 @@
 #pragma once
 
-#include <QtWidgets/QComboBox>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QPushButton>
 #include <QtWidgets/QTextEdit>
-#include <QtWidgets/QVBoxLayout>
 
 /**
  * @brief	License widget.

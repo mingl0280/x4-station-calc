@@ -14,20 +14,19 @@
     #include <common/auto_release.h>
 
 class CrashHandler {
-  private:
+
     using SetUnhandledExceptionFilterFuncType
         = LPTOP_LEVEL_EXCEPTION_FILTER (*)(LPTOP_LEVEL_EXCEPTION_FILTER);
 
-  private:
     static CrashHandler _instance; ///< Instance.
     WCHAR
-    m_dumpFilePath[32000]; ///< Buffer of the path of the dump file.
+    m_dumpFilePath[32000]{}; ///< Buffer of the path of the dump file.
     WCHAR m_dumpFileMessage[32000
-                            + 256]; ///< Buffer of the message of the dump file.
+                            + 256]{}; ///< Buffer of the message of the dump file.
     SetUnhandledExceptionFilterFuncType
         m_realSetUnhandledExceptionFilter; ///< Real
                                            ///< SetUnhandledExceptionFilter().
-    ::std::atomic<LPTOP_LEVEL_EXCEPTION_FILTER>
+    std::atomic<LPTOP_LEVEL_EXCEPTION_FILTER>
         m_topLevelExceptionFiler; ///< Top level exception filter.
 
   public:
@@ -35,6 +34,10 @@ class CrashHandler {
      * @brief	Constructor.
      */
     CrashHandler();
+    CrashHandler(const CrashHandler&) = delete;
+    CrashHandler(CrashHandler&&) = delete;
+    CrashHandler operator=(const CrashHandler&) = delete;
+    CrashHandler operator=(CrashHandler&&) = delete;
 
     /**
      * @brief	Destructor.
@@ -92,23 +95,23 @@ CrashHandler::CrashHandler() :
 {
     m_realSetUnhandledExceptionFilter
         = reinterpret_cast<SetUnhandledExceptionFilterFuncType>(
-            ::GetProcAddress(GetModuleHandle("KERNEL32.dll"),
-                             "SetUnhandledExceptionFilter"));
+            GetProcAddress(GetModuleHandle(L"kernel32.dll"),
+                           "SetUnhandledExceptionFilter"));
     if (m_realSetUnhandledExceptionFilter == nullptr) {
-        ::MessageBoxW(NULL, L"Failed to find SetUnhandledExceptionFilter().",
-                      L"Unknow Error", MB_OK | MB_ICONERROR);
+        MessageBoxW(NULL, L"Failed to find SetUnhandledExceptionFilter().",
+                    L"Unknow Error", MB_OK | MB_ICONERROR);
     }
 
     // Enable EAT hook.
     if (! this->enableEATHook()) {
-        ::MessageBoxW(
+        MessageBoxW(
             NULL, L"Failed to make EAT hook, the crash handler is disabled.",
             L"EAT Hook Failed", MB_OK | MB_ICONERROR);
     }
 
     // Enable IAT hook.
     if (! this->enableIATHook()) {
-        ::MessageBoxW(
+        MessageBoxW(
             NULL, L"Failed to make IAT hook, the crash handler is disabled.",
             L"IAT Hook Failed", MB_OK | MB_ICONERROR);
     }
@@ -121,7 +124,7 @@ CrashHandler::CrashHandler() :
 /**
  * @brief	Destructor.
  */
-CrashHandler::~CrashHandler() {}
+CrashHandler::~CrashHandler() = default;
 
 /**
  * @brief		Exception handler.
@@ -129,7 +132,7 @@ CrashHandler::~CrashHandler() {}
 LONG CrashHandler::onCrash(struct _EXCEPTION_POINTERS *exceptionInfo)
 {
     // Ask user to save a dump file.
-    if (::MessageBoxW(
+    if (MessageBoxW(
             NULL,
             L"X4 Station Calculator has been crashed, would you like to "
             "save a core dump?",
@@ -161,11 +164,11 @@ LPTOP_LEVEL_EXCEPTION_FILTER WINAPI
  */
 bool CrashHandler::enableEATHook()
 {
-    uint8_t *moduleBaseAddr
-        = reinterpret_cast<uint8_t *>(::GetModuleHandleA("KERNEL32.dll"));
+    auto *moduleBaseAddr
+        = reinterpret_cast<uint8_t *>(GetModuleHandleA("KERNEL32.dll"));
 
     // Find DOS header.
-    PIMAGE_DOS_HEADER dosHeader
+    auto dosHeader
         = reinterpret_cast<PIMAGE_DOS_HEADER>(moduleBaseAddr);
 
     if (dosHeader == NULL) {
@@ -177,7 +180,7 @@ bool CrashHandler::enableEATHook()
     }
 
     // Find NT header.
-    PIMAGE_NT_HEADERS ntHeader = reinterpret_cast<PIMAGE_NT_HEADERS>(
+    auto ntHeader = reinterpret_cast<PIMAGE_NT_HEADERS>(
         moduleBaseAddr + dosHeader->e_lfanew);
 
     if (ntHeader->Signature != IMAGE_NT_SIGNATURE) {
@@ -188,24 +191,24 @@ bool CrashHandler::enableEATHook()
     PIMAGE_OPTIONAL_HEADER optionalHeader = &(ntHeader->OptionalHeader);
 
     // Find exprot descriptor.
-    PIMAGE_EXPORT_DIRECTORY exportDirectory
+    auto exportDirectory
         = reinterpret_cast<PIMAGE_EXPORT_DIRECTORY>(
             moduleBaseAddr
             + optionalHeader->DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT]
                   .VirtualAddress);
-    PDWORD addressOfNames = reinterpret_cast<PDWORD>(
+    auto addressOfNames = reinterpret_cast<PDWORD>(
         moduleBaseAddr + exportDirectory->AddressOfNames);
 
     // Search for symbol name.
     for (DWORD i = 0; i < exportDirectory->NumberOfNames; ++i) {
-        LPCTSTR symbolName
-            = reinterpret_cast<LPCTSTR>(moduleBaseAddr + addressOfNames[i]);
-
-        if (::strcmp(symbolName, "SetUnhandledExceptionFilter") == 0) {
+        const auto symbolName
+            = reinterpret_cast<char*>(moduleBaseAddr + addressOfNames[i]);
+        
+        if (_stricmp(symbolName, "SetUnhandledExceptionFilter") == 0) {
             // Find RVA.
-            PWORD addressOfNameOrdinals = reinterpret_cast<PWORD>(
+            auto addressOfNameOrdinals = reinterpret_cast<PWORD>(
                 moduleBaseAddr + exportDirectory->AddressOfNameOrdinals);
-            PDWORD addressOfFunctions = reinterpret_cast<PDWORD>(
+            auto addressOfFunctions = reinterpret_cast<PDWORD>(
                 moduleBaseAddr + exportDirectory->AddressOfFunctions);
             PDWORD targetRVA = addressOfFunctions + addressOfNameOrdinals[i];
 
@@ -218,20 +221,20 @@ bool CrashHandler::enableEATHook()
             SIZE_T written    = 0;
 
             // Make memory writable.
-            ::VirtualProtect(targetRVA, sizeof(*targetRVA), PAGE_READWRITE,
-                             &oldMemAttr);
+            VirtualProtect(targetRVA, sizeof(*targetRVA), PAGE_READWRITE,
+                           &oldMemAttr);
 
             // Set hook.
-            DWORD newRVA = static_cast<DWORD>(
+            auto newRVA = static_cast<DWORD>(
                 reinterpret_cast<UINT_PTR>(
                     &CrashHandler::fakeSetUnhandledExceptionFilter)
                 - reinterpret_cast<UINT_PTR>(moduleBaseAddr));
-            ::WriteProcessMemory(::GetCurrentProcess(), targetRVA, &newRVA,
-                                 sizeof(newRVA), &written);
+            WriteProcessMemory(GetCurrentProcess(), targetRVA, &newRVA,
+                               sizeof(newRVA), &written);
 
             // Resume memory attribute.
-            ::VirtualProtect(targetRVA, sizeof(*targetRVA), oldMemAttr,
-                             &oldMemAttr);
+            VirtualProtect(targetRVA, sizeof(*targetRVA), oldMemAttr,
+                           &oldMemAttr);
 
             return true;
         }
@@ -246,21 +249,21 @@ bool CrashHandler::enableEATHook()
 bool CrashHandler::enableIATHook()
 {
     // Traverse loaded modules.
-    HANDLE snapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, 0);
+    HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, 0);
     if (snapshot == INVALID_HANDLE_VALUE) {
         return false;
     }
     AutoRelease<HANDLE> releaseSnapshot(snapshot, [](HANDLE &hnd) -> void {
-        ::CloseHandle(hnd);
+        CloseHandle(hnd);
     });
 
     MODULEENTRY32 entery;
     for (BOOL hasNext = ::Module32First(snapshot, &entery); hasNext;
          hasNext      = ::Module32Next(snapshot, &entery)) {
-        uint8_t *moduleBaseAddr
+        auto*moduleBaseAddr
             = reinterpret_cast<uint8_t *>(entery.modBaseAddr);
         // Find DOS header.
-        PIMAGE_DOS_HEADER dosHeader
+        auto dosHeader
             = reinterpret_cast<PIMAGE_DOS_HEADER>(moduleBaseAddr);
 
         if (dosHeader == NULL) {
@@ -272,7 +275,7 @@ bool CrashHandler::enableIATHook()
         }
 
         // Find NT header.
-        PIMAGE_NT_HEADERS ntHeader = reinterpret_cast<PIMAGE_NT_HEADERS>(
+        auto ntHeader = reinterpret_cast<PIMAGE_NT_HEADERS>(
             moduleBaseAddr + dosHeader->e_lfanew);
 
         if (ntHeader->Signature != IMAGE_NT_SIGNATURE) {
@@ -283,50 +286,49 @@ bool CrashHandler::enableIATHook()
         PIMAGE_OPTIONAL_HEADER optionalHeader = &(ntHeader->OptionalHeader);
 
         // Find import descriptors.
-        for (PIMAGE_IMPORT_DESCRIPTOR importDescriptor
-             = reinterpret_cast<PIMAGE_IMPORT_DESCRIPTOR>(
-                 moduleBaseAddr
-                 + optionalHeader->DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT]
-                       .VirtualAddress);
+        for (auto importDescriptor
+                 = reinterpret_cast<PIMAGE_IMPORT_DESCRIPTOR>(
+                     moduleBaseAddr
+                     + optionalHeader->DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT]
+                     .VirtualAddress);
              importDescriptor->Name != 0; ++importDescriptor) {
-            LPCTSTR dllName = reinterpret_cast<LPCTSTR>(
+            auto dllName = reinterpret_cast<LPCTSTR>(
                 moduleBaseAddr + importDescriptor->Name);
 
-            if (::_stricmp(dllName, "KERNEL32.dll") == 0) {
-                PIMAGE_THUNK_DATA originalThunkData
+            if (_wcsicmp(dllName, L"kernel32.dll") == 0) {
+                auto originalThunkData
                     = reinterpret_cast<PIMAGE_THUNK_DATA>(
                         moduleBaseAddr + importDescriptor->OriginalFirstThunk);
-                PIMAGE_THUNK_DATA thunkData
+                auto thunkData
                     = reinterpret_cast<PIMAGE_THUNK_DATA>(
                         moduleBaseAddr + importDescriptor->FirstThunk);
                 for (; originalThunkData->u1.Ordinal != 0;
                      ++originalThunkData, ++thunkData) {
                     if (! (originalThunkData->u1.Ordinal
                            & IMAGE_ORDINAL_FLAG)) {
-                        PIMAGE_IMPORT_BY_NAME importByName
+                        auto importByName
                             = reinterpret_cast<PIMAGE_IMPORT_BY_NAME>(
                                 moduleBaseAddr + originalThunkData->u1.Ordinal);
-                        if (::strcmp(importByName->Name,
-                                     "SetUnhandledExceptionFilter")
+                        if (strcmp(importByName->Name,
+                                   "SetUnhandledExceptionFilter")
                             == 0) {
                             DWORD  oldMemAttr    = 0;
                             SIZE_T written       = 0;
                             void * targetAddress = &(thunkData->u1.Ordinal);
                             // Make memory writable.
-                            ::VirtualProtect(targetAddress, sizeof(void *),
-                                             PAGE_READWRITE, &oldMemAttr);
+                            VirtualProtect(targetAddress, sizeof(void *),
+                                           PAGE_READWRITE, &oldMemAttr);
 
                             // Set hook.
-                            void *hookFunc
-                                = &CrashHandler::
-                                      fakeSetUnhandledExceptionFilter;
-                            ::WriteProcessMemory(::GetCurrentProcess(),
-                                                 targetAddress, &hookFunc,
-                                                 sizeof(hookFunc), &written);
+                            
+                            auto *hook_func = fakeSetUnhandledExceptionFilter;
+                            WriteProcessMemory(GetCurrentProcess(),
+                                               targetAddress, &hook_func,
+                                               sizeof(hook_func), &written);
 
                             // Resume memory attribute.
-                            ::VirtualProtect(targetAddress, sizeof(void *),
-                                             oldMemAttr, &oldMemAttr);
+                            VirtualProtect(targetAddress, sizeof(void *),
+                                           oldMemAttr, &oldMemAttr);
                         }
                     }
                 }
@@ -343,28 +345,28 @@ bool CrashHandler::enableIATHook()
 void CrashHandler::saveDump(struct _EXCEPTION_POINTERS *exceptionInfo)
 {
     // Make path.
-    time_t     timestamp   = ::time(NULL);
-    struct tm *currentTime = ::localtime(&timestamp);
+    time_t     timestamp   = time(NULL);
+    struct tm *currentTime = localtime(&timestamp);
     WCHAR *    p           = m_dumpFilePath;
-    ::wcscpy(p, L"\\\\?\\");
+    wcscpy(p, L"\\\\?\\");
     p += 4;
     PWSTR myDocumentsPath;
-    if (::SHGetKnownFolderPath(FOLDERID_Documents, 0, NULL, &myDocumentsPath)
+    if (SHGetKnownFolderPath(FOLDERID_Documents, 0, NULL, &myDocumentsPath)
         != S_OK) {
-        ::MessageBoxW(NULL, L"Failed to get the path of \"My Documents\".",
-                      L"Error", MB_OK | MB_ICONERROR);
+        MessageBoxW(NULL, L"Failed to get the path of \"My Documents\".",
+                    L"Error", MB_OK | MB_ICONERROR);
         return;
     }
-    ::wcscpy(p, myDocumentsPath);
+    wcscpy(p, myDocumentsPath);
     while (*p != L'\0') {
         ++p;
     }
-    ::_snwprintf(p,
-                 sizeof(m_dumpFilePath) / sizeof(WCHAR) - (p - m_dumpFilePath),
-                 L"\\x4-station-calc-%d-%.2d-%.2d_%.2d_%.2d_%.2d.dmp",
-                 currentTime->tm_year + 1900, currentTime->tm_mon + 1,
-                 currentTime->tm_mday, currentTime->tm_hour,
-                 currentTime->tm_min, currentTime->tm_sec);
+    _snwprintf(p,
+               sizeof(m_dumpFilePath) / sizeof(WCHAR) - (p - m_dumpFilePath),
+               L"\\x4-station-calc-%d-%.2d-%.2d_%.2d_%.2d_%.2d.dmp",
+               currentTime->tm_year + 1900, currentTime->tm_mon + 1,
+               currentTime->tm_mday, currentTime->tm_hour,
+               currentTime->tm_min, currentTime->tm_sec);
 
     // Save dump file.
     HANDLE dumpFile
@@ -376,27 +378,27 @@ void CrashHandler::saveDump(struct _EXCEPTION_POINTERS *exceptionInfo)
         exInfo.ThreadId          = GetCurrentThreadId();
         exInfo.ExceptionPointers = exceptionInfo;
         exInfo.ClientPointers    = NULL;
-        if (::MiniDumpWriteDump(::GetCurrentProcess(), ::GetCurrentProcessId(),
-                                dumpFile, MiniDumpNormal, &exInfo, NULL,
-                                NULL)) {
-            ::_snwprintf(m_dumpFileMessage,
-                         sizeof(m_dumpFileMessage) / sizeof(WCHAR),
-                         L"Dump file \"%s\" saved.", m_dumpFilePath + 4);
-            ::MessageBoxW(NULL, m_dumpFileMessage, L"Dump File Saved",
-                          MB_OK | MB_ICONINFORMATION);
+        if (MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(),
+                              dumpFile, MiniDumpNormal, &exInfo, NULL,
+                              NULL)) {
+            _snwprintf(m_dumpFileMessage,
+                       sizeof(m_dumpFileMessage) / sizeof(WCHAR),
+                       L"Dump file \"%s\" saved.", m_dumpFilePath + 4);
+            MessageBoxW(NULL, m_dumpFileMessage, L"Dump File Saved",
+                        MB_OK | MB_ICONINFORMATION);
         } else {
-            ::_snwprintf(
+            _snwprintf(
                 m_dumpFileMessage, sizeof(m_dumpFileMessage) / sizeof(WCHAR),
                 L"Failed to write dump file \"%s\".", m_dumpFilePath + 4);
-            ::MessageBoxW(NULL, m_dumpFileMessage, L"Error",
-                          MB_OK | MB_ICONERROR);
+            MessageBoxW(NULL, m_dumpFileMessage, L"Error",
+                        MB_OK | MB_ICONERROR);
         }
-        ::CloseHandle(dumpFile);
+        CloseHandle(dumpFile);
     } else {
-        ::_snwprintf(m_dumpFileMessage,
-                     sizeof(m_dumpFileMessage) / sizeof(WCHAR),
-                     L"Failed to create dump file \"%s\".", m_dumpFilePath);
-        ::MessageBoxW(NULL, m_dumpFileMessage, L"Error", MB_OK | MB_ICONERROR);
+        _snwprintf(m_dumpFileMessage,
+                   sizeof(m_dumpFileMessage) / sizeof(WCHAR),
+                   L"Failed to create dump file \"%s\".", m_dumpFilePath);
+        MessageBoxW(NULL, m_dumpFileMessage, L"Error", MB_OK | MB_ICONERROR);
     }
 }
 

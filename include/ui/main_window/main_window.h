@@ -1,11 +1,8 @@
 #pragma once
 
-#include <QtWidgets/QAction>
+#include <QAction>
 #include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMdiArea>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QMenuBar>
-#include <QtWidgets/QToolBar>
+#include <QMdiSubWindow>
 
 #include <ui/main_window/info_widget/info_widget.h>
 #include <ui/main_window/station_modules_widget/station_modules_widget.h>

@@ -256,8 +256,7 @@ bool Global::parseArgs(int &argc, char **&argv, int &exitCode)
 
         if (iter == m_argMap.end()) {
             this->showHelp(argv[0]);
-            exitCode = 1;
-            return false;
+            
         } else {
             if (! iter->second.handler()) {
                 return false;

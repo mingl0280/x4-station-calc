@@ -4,7 +4,6 @@
 #include <memory>
 
 #include <QtCore/QJsonDocument>
-#include <QtCore/QMap>
 #include <QtCore/QReadWriteLock>
 #include <QtCore/QString>
 #include <QtCore/QVector>

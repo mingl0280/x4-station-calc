@@ -1,7 +1,8 @@
 #pragma once
 
 #include <interfaces/i_create_factory_func.h>
-#include <ui/main_window/editor_widget/editor_widget.h>
+
+#include "editor_widget.h"
 
 /**
  * @brief	Operation.
@@ -72,13 +73,3 @@ class EditorWidget::OperationBase :
      */
     virtual ~OperationBase() {};
 };
-
-#include <ui/main_window/editor_widget/operation/add_group_operation.h>
-#include <ui/main_window/editor_widget/operation/add_module_operation.h>
-#include <ui/main_window/editor_widget/operation/change_module_amount_operation.h>
-#include <ui/main_window/editor_widget/operation/move_group_operation.h>
-#include <ui/main_window/editor_widget/operation/move_module_operation.h>
-#include <ui/main_window/editor_widget/operation/paste_group_operation.h>
-#include <ui/main_window/editor_widget/operation/paste_module_operation.h>
-#include <ui/main_window/editor_widget/operation/remove_operation.h>
-#include <ui/main_window/editor_widget/operation/rename_group_operation.h>

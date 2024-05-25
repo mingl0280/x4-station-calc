@@ -1,7 +1,8 @@
 #include <QtCore/QDebug>
 #include <QtCore/QFile>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QDesktopWidget>
+#include <QScreen>
+#include <QPushButton>
 #include <QtWidgets/QScrollBar>
 
 #include <locale/string_table.h>
@@ -57,11 +58,12 @@ LicenseDialog::LicenseDialog() : QDialog(nullptr)
 
     /// Window size and position.
     m_layout->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
-    QDesktopWidget *desktop = QApplication::desktop();
+
     QSize           sz      = m_layout->sizeHint();
-    this->setGeometry((desktop->width() - sz.width()) / 2,
-                      (desktop->height() - sz.height()) / 2, sz.width(),
-                      sz.height());
+    QRect screen_geometry = QApplication::primaryScreen()->geometry();
+    this->setGeometry((screen_geometry.width() - sz.width()) / 2,
+        (screen_geometry.height() - sz.height()) / 2, sz.width(),
+        sz.height());
 }
 
 /**

@@ -4,7 +4,6 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QString>
-#include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QSslConfiguration>

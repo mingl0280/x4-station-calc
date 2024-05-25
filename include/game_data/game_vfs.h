@@ -3,12 +3,9 @@
 #include <functional>
 #include <memory>
 
-#include <QtCore/QDir>
 #include <QtCore/QFile>
 #include <QtCore/QMap>
 #include <QtCore/QMutex>
-#include <QtCore/QObject>
-#include <QtCore/QVector>
 
 #include <interfaces/i_initialized.h>
 

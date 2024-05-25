@@ -6,8 +6,6 @@
 #include <QtCore/QMap>
 #include <QtCore/QString>
 
-#include <common/xml_loader.h>
-
 /**
  * @brief	Loader context.
  */
@@ -42,8 +40,8 @@ class XMLLoader::Context {
     Context();
 
     // Delete constructors
-    Context(const Context &) = delete;
-    Context(Context &&)      = delete;
+    Context(const Context &);
+    Context(Context &&);
 
   public:
     /**

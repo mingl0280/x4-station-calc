@@ -1,6 +1,6 @@
 #include <QtCore/QEventLoop>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QDesktopWidget>
+#include <QScreen>
 
 #include <game_data/game_data.h>
 #include <locale/string_table.h>
@@ -58,7 +58,7 @@ NewFactoryWizard::NewFactoryWizard(QWidget *parent) :
     this->connect(m_btnCancel, &QPushButton::clicked, this,
                   &NewFactoryWizard::onBtnCancelClicked);
 
-    QRect windowRect = QApplication::desktop()->geometry();
+    QRect windowRect = QApplication::primaryScreen()->geometry();
 
     windowRect.setWidth(windowRect.width() / 4 * 3);
     windowRect.setHeight(windowRect.height() / 4 * 3);

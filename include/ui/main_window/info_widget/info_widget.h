@@ -1,13 +1,7 @@
 #pragma once
 
-#include <functional>
-
-#include <QtCore/QMap>
 #include <QtWidgets/QGridLayout>
-#include <QtWidgets/QPushButton>
 #include <QtWidgets/QTreeWidget>
-#include <QtWidgets/QTreeWidgetItem>
-
 #include <ui/controls/square_button.h>
 #include <ui/main_window/action_control_dock_widget.h>
 

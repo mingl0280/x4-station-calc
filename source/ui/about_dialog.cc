@@ -1,6 +1,10 @@
 #include <QtCore/QFile>
 #include <QtWidgets/QApplication>
+#if QT_VERSION_MAJOR >= 6  
+#include <qscreen.h>
+#else
 #include <QtWidgets/QDesktopWidget>
+#endif
 
 #include <locale/string_table.h>
 #include <ui/about_dialog.h>
@@ -42,9 +46,13 @@ AboutDialog::AboutDialog(QWidget *parent) : QDialog(parent)
     m_txtChangelog->setText(QString::fromUtf8(file.readAll()));
 
     // Size.
+#if QT_VERSION_MAJOR >= 6
+    int width = QGuiApplication::primaryScreen()->size().width() / 3;
+    int height = QGuiApplication::primaryScreen()->size().height() * 2 / 3;
+#else 
     int width  = QApplication::desktop()->width() / 3;
     int height = QApplication::desktop()->height() * 2 / 3;
-
+#endif
     this->setFixedSize(width, height);
 }
 

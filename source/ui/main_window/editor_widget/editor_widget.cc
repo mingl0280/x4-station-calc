@@ -1,19 +1,27 @@
 #include <QtCore/QDebug>
 #include <QtCore/QDir>
-#include <QtCore/QMimeData>
 #include <QtGui/QClipboard>
-#include <QtGui/QCloseEvent>
-#include <QtGui/QFocusEvent>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QMessageBox>
 
 #include <config.h>
+#include <QMenu>
 #include <locale/string_table.h>
 #include <ui/main_window/editor_widget/editor_widget.h>
 #include <ui/main_window/editor_widget/x4sc_group_clipboard_mime_data_builder.h>
 #include <ui/main_window/editor_widget/x4sc_module_clipboard_mime_data_builder.h>
+
+#include "ui/main_window/editor_widget/operation/add_group_operation.h"
+#include "ui/main_window/editor_widget/operation/add_module_operation.h"
+#include "ui/main_window/editor_widget/operation/change_module_amount_operation.h"
+#include "ui/main_window/editor_widget/operation/move_group_operation.h"
+#include "ui/main_window/editor_widget/operation/move_module_operation.h"
+#include "ui/main_window/editor_widget/operation/paste_group_operation.h"
+#include "ui/main_window/editor_widget/operation/paste_module_operation.h"
+#include "ui/main_window/editor_widget/operation/remove_operation.h"
+#include "ui/main_window/editor_widget/operation/rename_group_operation.h"
 
 QMap<QString, EditorWidget *> EditorWidget::_opendFiles; ///< Opened files.
 
@@ -566,8 +574,8 @@ void EditorWidget::makeSummary(SummaryInfo &summary)
     auto gameWares          = GameData::instance()->wares();
 
     // Count summary.
-    for (auto saveGroup : m_save->groups()) {
-        for (auto saveModule : saveGroup->modules()) {
+    for (const auto& saveGroup : m_save->groups()) {
+        for (const auto& saveModule : saveGroup->modules()) {
             auto module = gameStationModules->module(saveModule->module());
 
             // Hull & explosion damage.

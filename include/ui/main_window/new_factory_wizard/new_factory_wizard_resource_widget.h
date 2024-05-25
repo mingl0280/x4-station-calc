@@ -1,12 +1,8 @@
 #pragma once
 
 #include <QtGui/QPaintEvent>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QScrollArea>
-#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
-#include <save/save.h>
 #include <ui/main_window/new_factory_wizard/new_factory_wizard.h>
 #include <ui/main_window/new_factory_wizard/new_factory_wizard_central_widget.h>
 #include <ui/main_window/new_factory_wizard/new_factory_wizard_resource_widget/ware_button.h>

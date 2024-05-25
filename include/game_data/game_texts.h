@@ -6,13 +6,10 @@
 
 #include <QtCore/QMap>
 #include <QtCore/QMutex>
-#include <QtCore/QObject>
-#include <QtCore/QVector>
-#include <QtCore/QXmlStreamReader>
 
 #include <common.h>
 #include <interfaces/i_load_factory_func.h>
-#include <locale/string_table.h>
+#include <QtCore/qregularexpression.h>
 
 class GameVFS;
 
@@ -48,15 +45,15 @@ class GameTexts :
 
         IDPair(const QString &s) : pageID(-1), textID(-1)
         {
-            QRegExp referenceExp("\\{\\s*(\\d+)\\s*,\\s*(\\d+)\\s*\\}");
-            int     index = referenceExp.indexIn(s);
+            const QRegularExpression referenceExp(R"(\{\s*(\d+)\s*,\s*(\d+)\s*\})");
+            const QRegularExpressionMatch match = referenceExp.match(s);
 
-            if (index == -1) {
+            if (!match.hasMatch()) {
                 return;
             }
 
-            pageID = referenceExp.cap(1).toInt();
-            textID = referenceExp.cap(2).toInt();
+            pageID = match.captured(1).toInt();
+            textID = match.captured(2).toInt();
         }
     };
 

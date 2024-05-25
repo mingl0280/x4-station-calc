@@ -5,6 +5,7 @@
 #include <locale/string_table.h>
 #include <save/save_group.h>
 
+class SaveVersion;
 /**
  * @brief		Create a module group information.
  */

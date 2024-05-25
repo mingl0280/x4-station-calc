@@ -3,12 +3,10 @@
 #include <QtCore/QList>
 #include <QtCore/QSet>
 #include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
+#include <QPushButton>
+#include <QLabel>
 
-#include <game_data/game_wares.h>
 #include <save/save.h>
 #include <ui/controls/scroll_area_auto_fill.h>
 
@@ -172,5 +170,3 @@ class NewFactoryWizard : public QWidget {
      */
     void onBtnCancelClicked();
 };
-
-#include <ui/main_window/new_factory_wizard/new_factory_wizard_central_widget.h>

@@ -3,16 +3,11 @@
 #include <memory>
 
 #include <QtCore/QMap>
-#include <QtCore/QVector>
 #include <QtGui/QCloseEvent>
-#include <QtWidgets/QLabel>
 #include <QtWidgets/QMdiSubWindow>
-#include <QtWidgets/QTreeWidget>
-#include <QtWidgets/QTreeWidgetItem>
 #include <QtWidgets/QVBoxLayout>
 
 #include <common/generic_string.h>
-#include <common/multi_threading.h>
 #include <save/save.h>
 #include <ui/main_window/editor_widget/group_item.h>
 #include <ui/main_window/editor_widget/module_item.h>

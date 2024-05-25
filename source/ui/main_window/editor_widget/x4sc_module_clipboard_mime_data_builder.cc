@@ -1,6 +1,5 @@
 #include <QtCore/QJsonArray>
 #include <QtCore/QJsonDocument>
-#include <QtCore/QJsonObject>
 
 #include <save/save.h>
 #include <ui/main_window/editor_widget/x4sc_module_clipboard_mime_data_builder.h>
@@ -108,4 +107,4 @@ QVector<::std::shared_ptr<SaveModule>>
 /**
  * @brief       Destructor.
  */
-X4SCModuleClipboardMimeDataBuilder::~X4SCModuleClipboardMimeDataBuilder() {}
+X4SCModuleClipboardMimeDataBuilder::~X4SCModuleClipboardMimeDataBuilder() = default;

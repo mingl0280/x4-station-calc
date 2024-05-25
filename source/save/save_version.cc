@@ -1,4 +1,3 @@
-#include <QtCore/QString>
 #include <QtCore/QStringList>
 
 #include <save/save_version.h>

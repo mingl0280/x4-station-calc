@@ -142,8 +142,10 @@ GroupItemWidget::GroupItemWidget(GroupItem *item) : m_item(item)
                   &GroupItemWidget::onBtnRemoveClicked);
 
     m_layout->addStretch();
+    int margin_top = 0, margin_bottom = 0;
+    m_layout->getContentsMargins(nullptr, &margin_top, nullptr, &margin_bottom);
     this->setMaximumHeight(this->fontMetrics().height()
-                           + m_layout->margin() * 2);
+                           + margin_top + margin_bottom);
 }
 
 /**

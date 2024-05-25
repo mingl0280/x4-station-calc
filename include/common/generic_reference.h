@@ -6,7 +6,6 @@
 
 #include <QtCore/QMap>
 #include <QtCore/QMutex>
-#include <QtCore/QMutexLocker>
 
 /**
  * @brief		Generic refence manager.

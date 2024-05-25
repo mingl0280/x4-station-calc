@@ -72,7 +72,7 @@ ModuleItemWidget::ModuleItemWidget(ModuleItem *item) :
     m_spinAmount = new AmountSpinBox(this);
     m_layout->QLayout::addWidget(m_spinAmount);
     m_spinAmount->setValue((int)m_item->moduleAmount());
-    this->connect(m_spinAmount, &AmountSpinBox::amountEdited, this,
+    this->connect(m_spinAmount, &AmountSpinBox::AmountEdited, this,
                   &ModuleItemWidget::onSpinboxValueChanged);
 
     // Button Up.
@@ -120,8 +120,10 @@ ModuleItemWidget::ModuleItemWidget(ModuleItem *item) :
     }
 
     m_layout->addStretch();
+    int margin_top = 0, margin_bottom = 0;
+    m_layout->getContentsMargins(nullptr, &margin_top, nullptr, &margin_bottom);
     this->setMaximumHeight(this->fontMetrics().height()
-                           + m_layout->margin() * 2);
+        + margin_top + margin_bottom);
 
     this->connect(StringTable::instance().get(), &StringTable::languageChanged,
                   this, &ModuleItemWidget::onLanguageChanged);

@@ -1,15 +1,12 @@
 #include <QtCore/QDebug>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
-#include <QtGui/QCloseEvent>
 #include <QtGui/QDesktopServices>
-#include <QtGui/QIcon>
-#include <QtGui/QKeySequence>
-#include <QtGui/QMoveEvent>
-#include <QtGui/QResizeEvent>
-#include <QtGui/QWindowStateChangeEvent>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QDesktopWidget>
+#include <QMenuBar>
+#include <QMenu>
+#include <QMdiArea>
+#include <QToolBar>
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
 
@@ -46,7 +43,7 @@ MainWindow::MainWindow() : QMainWindow(nullptr)
     this->setStyleSheet(styleFile.readAll());
 
     // Initialize windows size and position.
-    QRect windowRect = QApplication::desktop()->geometry();
+    QRect windowRect = QApplication::primaryScreen()->geometry();
     windowRect.setSize(windowRect.size() / 2);
     windowRect.setX(windowRect.width() / 4);
     windowRect.setY(windowRect.height() / 4);

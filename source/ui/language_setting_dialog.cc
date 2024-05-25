@@ -1,10 +1,10 @@
 #include <QtCore/QDebug>
 #include <QtCore/QMap>
 #include <QtCore/QtGlobal>
-#include <QtGui/QResizeEvent>
 #include <QtGui/QShowEvent>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QDesktopWidget>
+#include <QPushButton>
+#include <QScreen>
 
 #include <locale/string_table.h>
 #include <ui/language_setting_dialog.h>
@@ -63,11 +63,11 @@ LanguageSettingDialog::LanguageSettingDialog() : QDialog(nullptr)
 
     /// Window size and position.
     m_layout->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
-    QDesktopWidget *desktop = QApplication::desktop();
-    QSize           sz      = m_layout->sizeHint();
-    this->setGeometry((desktop->width() - sz.width()) / 2,
-                      (desktop->height() - sz.height()) / 2, sz.width(),
-                      sz.height());
+    QSize sz = m_layout->sizeHint();
+    QRect screenGeometry = QApplication::primaryScreen()->geometry();
+    this->setGeometry((screenGeometry.width() - sz.width()) / 2,
+        (screenGeometry.height() - sz.height()) / 2, sz.width(),
+        sz.height());
 
     this->connect(StringTable::instance().get(), &StringTable::languageChanged,
                   this, &LanguageSettingDialog::onLanguageChanged);

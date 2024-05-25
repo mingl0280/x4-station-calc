@@ -1,4 +1,3 @@
-#include <QtCore/QDebug>
 #include <QtCore/QFile>
 #include <QtGui/QPixmap>
 #include <QtGui/QResizeEvent>

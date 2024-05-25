@@ -1,11 +1,6 @@
 #pragma once
 
-#include <functional>
-
-#include <QtCore/QMap>
 #include <QtCore/QObject>
-#include <QtCore/QReadWriteLock>
-#include <QtCore/QVector>
 
 #include <game_data/game_components.h>
 #include <game_data/game_macros.h>
@@ -14,7 +9,6 @@
 #include <game_data/game_texts.h>
 #include <game_data/game_vfs.h>
 #include <game_data/game_wares.h>
-#include <interfaces/i_load_factory_func.h>
 #include <interfaces/i_singleton.h>
 #include <ui/splash/splash_widget.h>
 

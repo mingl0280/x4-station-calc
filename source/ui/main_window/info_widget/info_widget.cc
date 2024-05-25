@@ -1,9 +1,7 @@
 #include <cmath>
 
 #include <QtCore/QDebug>
-#include <QtGui/QIcon>
 #include <QtWidgets/QHeaderView>
-#include <QtWidgets/QTreeWidgetItemIterator>
 
 #include <common/generic_string.h>
 #include <game_data/game_data.h>

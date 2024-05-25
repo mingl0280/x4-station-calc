@@ -1,13 +1,13 @@
 #include <QtCore/QDebug>
-#include <QtCore/QReadLocker>
-#include <QtCore/QWriteLocker>
-#include <QtGui/QCloseEvent>
 #include <QtGui/QIcon>
 #include <QtGui/QPaintEvent>
 #include <QtGui/QPainter>
 #include <QtWidgets/QApplication>
+#if QT_VERSION_MAJOR >= 6
+#include <qscreen.h>
+#else
 #include <QtWidgets/QDesktopWidget>
-
+#endif
 #include <ui/splash/splash_widget.h>
 
 #define MARGIN 10
@@ -33,13 +33,24 @@ SplashWidget::SplashWidget(QWidget *parent) :
 
     /// Set size.
     QImage          background(":/Images/splash.jpg");
+#if QT_VERSION_MAJOR >= 6
+    QScreen* desktop = QGuiApplication::primaryScreen();
+    int      width = desktop->size().width() / 2;
+    QSize    sz(width, background.height() * width / background.width());
+    this->setFixedSize(sz);
+    this->setGeometry((desktop->size().width() - sz.width()) / 2,
+        (desktop->size().height() - sz.height()) / 2, sz.width(),
+        sz.height());
+#else
     QDesktopWidget *desktop = QApplication::desktop();
-    int             width   = desktop->width() / 2;
+    int             width = desktop->width() / 2;
     QSize           sz(width, background.height() * width / background.width());
     this->setFixedSize(sz);
     this->setGeometry((desktop->width() - sz.width()) / 2,
-                      (desktop->height() - sz.height()) / 2, sz.width(),
-                      sz.height());
+        (desktop->height() - sz.height()) / 2, sz.width(),
+        sz.height());
+#endif
+
     m_background = background.scaled(sz);
 
     this->connect(this, &SplashWidget::sigCallFunc, this,

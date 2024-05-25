@@ -4,24 +4,15 @@
 #include <memory>
 
 #include <QtCore/QMap>
-#include <QtCore/QMetaEnum>
-#include <QtCore/QMetaObject>
-#include <QtCore/QMetaType>
-#include <QtCore/QMutex>
-#include <QtCore/QObject>
 #include <QtCore/QSet>
-#include <QtCore/QVector>
-#include <QtCore/QXmlStreamReader>
 
 #include <common.h>
 #include <interfaces/i_load_factory_func.h>
-#include <locale/string_table.h>
 
 #include <game_data/game_vfs.h>
 
 #include <game_data/game_components.h>
 #include <game_data/game_macros.h>
-#include <game_data/game_races.h>
 #include <game_data/game_texts.h>
 #include <game_data/game_wares.h>
 

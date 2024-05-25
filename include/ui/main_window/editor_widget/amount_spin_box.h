@@ -44,13 +44,13 @@ class AmountSpinBox : public QWidget {
     /**
      * @brief       Destructor.
      */
-    virtual ~AmountSpinBox();
+    ~AmountSpinBox() override;
 
   signals:
     /**
      * @brief   Emitted when amount edited.
      */
-    void amountEdited(int i);
+    void AmountEdited(int i);
 
   private slots:
     /**

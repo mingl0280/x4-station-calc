@@ -8,8 +8,8 @@
  */
 SplashThread::SplashThread(::std::function<int()> workFunc,
                            SplashWidget *         parent) :
-    QThread(parent),
-    m_workFunc(workFunc), m_exitCode(-1)
+    QThread(reinterpret_cast<QObject*>(parent)),
+    m_workFunc(std::move(workFunc)), m_exitCode(-1)
 {}
 
 /**
@@ -17,7 +17,7 @@ SplashThread::SplashThread(::std::function<int()> workFunc,
  *
  * @return		Exit code.
  */
-int SplashThread::exitCode()
+int SplashThread::exitCode() const
 {
     return m_exitCode;
 }
@@ -25,7 +25,7 @@ int SplashThread::exitCode()
 /**
  * @brief		Destructor.
  */
-SplashThread::~SplashThread() {}
+SplashThread::~SplashThread() = default;
 
 /**
  * @brief		Thread function..

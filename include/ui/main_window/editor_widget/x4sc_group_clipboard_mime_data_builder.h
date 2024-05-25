@@ -2,7 +2,6 @@
 
 #include <QtCore/QJsonObject>
 #include <QtCore/QMimeData>
-#include <QtCore/QVector>
 
 #include <save/save.h>
 

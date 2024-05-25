@@ -1,11 +1,6 @@
 #include <common/xml_loader.h>
 
 /**
- * @brief	Constructor.
- */
-XMLLoader::XMLLoader() {}
-
-/**
  * @brief		Push context.
  */
 void XMLLoader::pushContext(::std::unique_ptr<Context> context)
@@ -98,11 +93,6 @@ bool XMLLoader::parse(QXmlStreamReader &         reader,
 
     return true;
 }
-
-/**
- * @brief	Destructor.
- */
-XMLLoader::~XMLLoader() {}
 
 /**
  * @brief		Operator [].

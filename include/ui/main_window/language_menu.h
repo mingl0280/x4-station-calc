@@ -1,8 +1,8 @@
 #pragma once
 
 #include <QtCore/QMap>
-#include <QtWidgets/QAction>
-#include <QtWidgets/QActionGroup>
+#include <QAction>
+#include <QActionGroup>
 #include <QtWidgets/QMenu>
 
 #include <locale/string_table.h>

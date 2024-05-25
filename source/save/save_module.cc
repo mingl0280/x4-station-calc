@@ -1,5 +1,4 @@
 #include <QtCore/QDebug>
-#include <QtCore/QFile>
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
 #include <QtCore/QJsonValue>

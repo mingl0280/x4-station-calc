@@ -12,6 +12,8 @@
 #include <locale/string_table.h>
 #include <save/save.h>
 
+#include "save/save_version.h"
+
 /// Current version.
 const SaveVersion Save::_currentVersion(1, 0, 0);
 

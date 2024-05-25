@@ -1,7 +1,5 @@
 #include <algorithm>
 
-#include <QtCore/QSet>
-
 #include <ui/main_window/editor_widget/operation/remove_operation.h>
 
 /**

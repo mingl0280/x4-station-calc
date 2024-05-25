@@ -1,7 +1,4 @@
 #include <QtCore/QFile>
-#include <QtCore/QtDebug>
-#include <QtGui/QPaintEvent>
-#include <QtGui/QPainter>
 #include <QtGui/QResizeEvent>
 #include <QtWidgets/QStyleOption>
 

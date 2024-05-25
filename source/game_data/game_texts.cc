@@ -1,7 +1,6 @@
 #include <QtCore/QDebug>
-#include <QtCore/QMutex>
 #include <QtCore/QMutexLocker>
-#include <QtCore/QRegExp>
+#include <QtCore/QRegularExpression>
 
 #include <common.h>
 #include <game_data/game_texts.h>
@@ -15,14 +14,13 @@ GameTexts::GameTexts(::std::shared_ptr<GameVFS>             vfs,
     m_unknowIndex(0)
 {
     QStringList textFiles;
-    QRegExp     nameFilter("\\d+-L\\d+\\.xml");
-    nameFilter.setCaseSensitivity(Qt::CaseSensitivity::CaseInsensitive);
+    QRegularExpression nameFilter(QRegularExpression::anchoredPattern(R"(\\d+-L\\d+\\.xml)"), QRegularExpression::CaseInsensitiveOption);
 
     // Master files
     ::std::shared_ptr<GameVFS::DirReader> dirReader = vfs->openDir("t");
     for (auto iter = dirReader->begin(); iter != dirReader->end(); ++iter) {
         if (iter->type == ::GameVFS::DirReader::EntryType::File
-            && nameFilter.exactMatch(iter->name)) {
+            && nameFilter.match(iter->name).hasMatch()) {
             textFiles.append(dirReader->absPath(iter->name));
         }
     }
@@ -42,7 +40,7 @@ GameTexts::GameTexts(::std::shared_ptr<GameVFS>             vfs,
                 for (auto iter = dirReader->begin(); iter != dirReader->end();
                      ++iter) {
                     if (iter->type == ::GameVFS::DirReader::EntryType::File
-                        && nameFilter.exactMatch(iter->name)) {
+                        && nameFilter.match(iter->name).hasMatch()) {
                         textFiles.append(dirReader->absPath(iter->name));
                     }
                 }
@@ -153,12 +151,12 @@ GameTexts::IDPair GameTexts::addText(const QString &str)
     {
         QMutexLocker lock(&m_pageLock);
         auto         pageIter = m_textPages.find(-1);
-        if (pageIter == m_textPages.end()) {
+        if (pageIter != m_textPages.end()) {
+            page = *pageIter;
+        } else {
             page            = ::std::shared_ptr<TextPage>(new TextPage);
             page->pageID    = -1;
             m_textPages[-1] = page;
-        } else {
-            page = *pageIter;
         }
     }
 
@@ -347,42 +345,44 @@ QVector<GameTexts::TextLink> GameTexts::parseText(QString s)
 {
     QVector<GameTexts::TextLink> ret;
     TextLink                     link;
-    QRegExp                      ignoreExp("\\(.*\\)");
-    QRegExp                      whiteSpacewExp("\\s");
-    QRegExp referenceExp("\\{\\s*(\\d+)\\s*,\\s*(\\d+)\\s*\\}");
-    QRegExp numExp("\\d+");
+    QRegularExpression ignoreExp(R"(\\(.*\\))");
+    //QRegExp                      whiteSpacewExp("\\s");
+    QRegularExpression referenceExp(R"(\\{\\s*(\\d+)\\s*,\\s*(\\d+)\\s*\\})");
+    //QRegExp numExp("\\d+");
 
-    s = s.replace(ignoreExp, "");
-    while (s != "") {
-        int index = referenceExp.indexIn(s);
-        if (index == -1) {
+    s.remove(ignoreExp);
+    while (!s.isEmpty()) {
+        QRegularExpressionMatch match = referenceExp.match(s);
+        if (!match.hasMatch()) {
             // No reference exists.
-            link.isRef          = false;
-            link.text           = this->parseEscape(s);
+            link.isRef = false;
+            link.text = parseEscape(s); // Assuming parseEscape is implemented elsewhere
             link.refInfo.pageID = 0;
             link.refInfo.textID = 0;
             ret.append(link);
             break;
-        } else {
+        }
+        else {
+            int index = match.capturedStart(0);
             // Reference found.
             if (index > 0) {
-                // Before
-                link.isRef          = false;
-                link.text           = this->parseEscape(s.left(index));
+                // Text before the reference
+                link.isRef = false;
+                link.text = parseEscape(s.left(index));
                 link.refInfo.pageID = 0;
                 link.refInfo.textID = 0;
                 ret.append(link);
             }
 
-            // Reference
-            link.isRef          = true;
-            link.text           = "";
-            link.refInfo.pageID = referenceExp.cap(1).toInt();
-            link.refInfo.textID = referenceExp.cap(2).toInt();
+            // Reference itself
+            link.isRef = true;
+            link.text = "";
+            link.refInfo.pageID = match.captured(1).toInt();
+            link.refInfo.textID = match.captured(2).toInt();
             ret.append(link);
 
-            // After
-            s = s.mid(index + referenceExp.cap().size());
+            // Continue after the reference
+            s = s.mid(index + match.capturedLength(0));
         }
     }
 

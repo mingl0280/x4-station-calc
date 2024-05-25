@@ -3,7 +3,6 @@
 
 #include <game_data/game_data.h>
 #include <locale/string_table.h>
-#include <ui/locale/q_tree_widget_item_locale.h>
 #include <ui/main_window/new_factory_wizard/new_factory_wizard_product_widget.h>
 #include <ui/main_window/new_factory_wizard/new_factory_wizard_product_widget/product_to_add_item.h>
 #include <ui/main_window/new_factory_wizard/new_factory_wizard_product_widget/target_product_item.h>

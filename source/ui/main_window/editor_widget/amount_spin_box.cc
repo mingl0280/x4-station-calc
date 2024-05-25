@@ -7,36 +7,36 @@
 /**
  * @brief       Constructor.
  */
-AmountSpinBox::AmountSpinBox(QWidget *parent) : QWidget(parent)
+AmountSpinBox::AmountSpinBox(QWidget* parent) : QWidget(parent)
 {
     m_layout = new QHBoxLayout();
-    m_layout->setMargin(0);
+    m_layout->setContentsMargins(0, 0, 0, 0);
     m_layout->setSpacing(0);
 
     this->setLayout(m_layout);
 
     m_txtAmount = new QLineEdit("1");
-    m_oldValue  = 1;
+    m_oldValue = 1;
     m_layout->addWidget(m_txtAmount);
-    this->connect(m_txtAmount, &QLineEdit::editingFinished, this,
-                  &AmountSpinBox::onEditingFinished);
+    QObject::connect(m_txtAmount, &QLineEdit::editingFinished, this,
+        &AmountSpinBox::onEditingFinished);
     m_validAmount = new QIntValidator(1, 65535, m_txtAmount);
     m_txtAmount->setValidator(m_validAmount);
 
     m_layoutButton = new QVBoxLayout();
     m_layout->addLayout(m_layoutButton);
-    m_layoutButton->setMargin(0);
+    m_layoutButton->setContentsMargins(0, 0, 0, 0);
     m_layoutButton->setSpacing(0);
 
     m_btnInc = new SquareButton(QIcon(":/Icons/Up.png"));
     m_layoutButton->addWidget(m_btnInc);
-    this->connect(m_btnInc, &QPushButton::clicked, this,
-                  &AmountSpinBox::onBtnIncClicked);
+    QObject::connect(m_btnInc, &QPushButton::clicked, this,
+        &AmountSpinBox::onBtnIncClicked);
 
     m_btnDec = new SquareButton(QIcon(":/Icons/Down.png"));
     m_layoutButton->addWidget(m_btnDec);
-    this->connect(m_btnDec, &QPushButton::clicked, this,
-                  &AmountSpinBox::onBtnDecClicked);
+    QObject::connect(m_btnDec, &QPushButton::clicked, this,
+        &AmountSpinBox::onBtnDecClicked);
 }
 
 /**
@@ -92,7 +92,7 @@ void AmountSpinBox::emitEdited()
     int num = m_txtAmount->text().toInt();
     if (m_oldValue != num) {
         m_oldValue = num;
-        emit this->amountEdited(num);
+        emit this->AmountEdited(num);
         this->updateBtnStatus();
     }
 }

@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <cstring>
 
-#include <QtCore/QTextCodec>
+
 #include <QtWidgets/QApplication>
 
 #include <common.h>
@@ -14,6 +14,11 @@
 #include <ui/license_dialog.h>
 #include <ui/main_window/main_window.h>
 #include <ui/splash/splash_widget.h>
+
+#if QT_VERSION_MAJOR>=6
+#else
+#include <QtCore/QTextCodec>
+#endif
 
 /**
  * @brief	Called when the first time to run.
@@ -47,9 +52,10 @@ int main(int argc, char *argv[])
 {
     Q_INIT_RESOURCE(resources);
 
+#if QT_VERSION_MAJOR < 6
     // Force UTF-8.
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
-
+#endif
     // High DPI support.
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 

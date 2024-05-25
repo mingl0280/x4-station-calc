@@ -1,7 +1,4 @@
-#include <QtCore/QFile>
-#include <QtGui/QColor>
 #include <QtGui/QPaintEvent>
-#include <QtGui/QPainter>
 
 #include <locale/string_table.h>
 #include <ui/main_window/editor_widget/warning_widget.h>

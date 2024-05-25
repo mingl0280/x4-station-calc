@@ -2,8 +2,6 @@
 #include <QtCore/QFile>
 #include <QtCore/QIODevice>
 #include <QtCore/QJsonObject>
-#include <QtCore/QReadLocker>
-#include <QtCore/QWriteLocker>
 
 #include <config.h>
 
@@ -43,14 +41,14 @@ Config::ValueType Config::valueType(const QString &key)
     // Split key.
     QVector<QString> splitedKey;
     if (! this->splitKey(key, splitedKey)) {
-        return ValueType::None;
+        return None;
     }
 
     // Find value
     QReadLocker locker(&m_lock);
     QJsonValue  value;
     if (! this->findNode(splitedKey, value)) {
-        return ValueType::None;
+        return None;
     }
 
     return this->valueType(value);
@@ -75,7 +73,7 @@ bool Config::getBool(const QString &key, bool defaultVal)
     }
 
     // Check type.
-    if (this->valueType(value) != ValueType::Bool) {
+    if (this->valueType(value) != Bool) {
         return defaultVal;
     }
 
@@ -102,7 +100,7 @@ double Config::getFloat(const QString &key, double defaultVal)
     }
 
     // Check type.
-    if (this->valueType(value) != ValueType::Number) {
+    if (this->valueType(value) != Number) {
         return defaultVal;
     }
 
@@ -129,7 +127,7 @@ int64_t Config::getInt(const QString &key, int64_t defaultVal)
     }
 
     // Check type.
-    if (this->valueType(value) != ValueType::Number) {
+    if (this->valueType(value) != Number) {
         return defaultVal;
     }
 
@@ -156,7 +154,7 @@ QString Config::getString(const QString &key, const QString &defaultVal)
     }
 
     // Check type.
-    if (this->valueType(value) != ValueType::String) {
+    if (this->valueType(value) != String) {
         return defaultVal;
     }
 
@@ -345,23 +343,23 @@ Config::ValueType Config::valueType(QJsonValue &node)
 {
     switch (node.type()) {
         case QJsonValue::Null:
-            return ValueType::None;
+            return None;
 
         case QJsonValue::Bool:
-            return ValueType::Bool;
+            return Bool;
 
         case QJsonValue::Double:
-            return ValueType::Number;
+            return Number;
 
         case QJsonValue::String:
-            return ValueType::String;
+            return String;
 
         case QJsonValue::Object:
-            return ValueType::Node;
+            return Node;
 
         case QJsonValue::Undefined:
         default:
-            return ValueType::None;
+            return None;
     }
 }
 

@@ -1,7 +1,6 @@
 #include <QtCore/QDebug>
-#include <QtCore/QMutex>
 #include <QtCore/QMutexLocker>
-#include <QtCore/QRegExp>
+#include <QtCore/QRegularExpression>
 
 #include <common.h>
 #include <game_data/game_races.h>

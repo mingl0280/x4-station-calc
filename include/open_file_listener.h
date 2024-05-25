@@ -1,6 +1,5 @@
 #pragma once
 
-#include <QtCore/QMutex>
 #include <QtCore/QQueue>
 #include <QtCore/QSharedMemory>
 #include <QtNetwork/QTcpServer>

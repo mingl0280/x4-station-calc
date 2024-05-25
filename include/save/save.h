@@ -1,12 +1,10 @@
 #pragma once
 
 #include <QtCore/QMap>
-#include <QtCore/QVector>
 
 #include <interfaces/i_create_factory_func.h>
 #include <interfaces/i_load_factory_func.h>
 #include <save/save_group.h>
-#include <save/save_module.h>
 
 /**
  * @brief		Save.

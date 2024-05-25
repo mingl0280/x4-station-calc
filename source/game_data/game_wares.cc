@@ -1,5 +1,5 @@
 #include <QtCore/QDebug>
-#include <QtCore/QRegExp>
+#include <QtCore/QRegularExpression>
 
 #include <game_data/game_data.h>
 #include <game_data/game_wares.h>
@@ -512,17 +512,18 @@ bool GameWares::onStartElementInExtensionDiff(
 {
     auto context = XMLLoader::Context::create();
     // Filters
-    QRegExp wareFilter("\\/wares\\/ware\\[@id='(\\w+)'\\]");
-    wareFilter.setCaseSensitivity(Qt::CaseSensitivity::CaseInsensitive);
+    QRegularExpression wareFilter(QRegularExpression::anchoredPattern(R"(/wares/ware\[@id='(\w+)'\])"), QRegularExpression::CaseInsensitiveOption);
+    
+    
     if (name == "add") {
+        auto ware_filter_match  = wareFilter.match(attr["sel"]);
         if (attr["sel"] == "/wares") {
             context->setOnStartElement(
                 ::std::bind(&GameWares::onStartElementInWares, this,
                             ::std::placeholders::_1, ::std::placeholders::_2,
                             ::std::placeholders::_3, ::std::placeholders::_4));
-        } else if (wareFilter.exactMatch(attr["sel"])) {
-            wareFilter.indexIn(attr["sel"]);
-            QString id = wareFilter.capturedTexts()[1];
+        } else if (ware_filter_match.hasMatch()) {
+            QString id = ware_filter_match.capturedTexts()[1];
 
             auto iter = m_wares.find(id);
             if (iter != m_wares.end()) {

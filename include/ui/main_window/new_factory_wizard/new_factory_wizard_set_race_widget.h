@@ -4,10 +4,7 @@
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QListWidget>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
 
-#include <save/save.h>
 #include <ui/controls/square_button.h>
 #include <ui/main_window/new_factory_wizard/new_factory_wizard.h>
 #include <ui/main_window/new_factory_wizard/new_factory_wizard_central_widget.h>

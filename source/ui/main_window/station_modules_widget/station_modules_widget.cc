@@ -1,9 +1,9 @@
 #include <QtCore/QCollator>
 #include <QtCore/QDebug>
-#include <QtWidgets/QComboBox>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMessageBox>
+#include <QCheckBox>
 
 #include <common/compare.h>
 #include <game_data/game_data.h>
@@ -21,8 +21,7 @@ StationModulesWidget::StationModulesWidget(QAction *       statusAction,
 {
     // Style
     // this->setWindowFlags(Qt::WindowType::Tool);
-    this->setFeatures(QDockWidget::DockWidgetFeature::DockWidgetClosable
-                      | QDockWidget::DockWidgetFeature::DockWidgetMovable);
+    this->setFeatures(DockWidgetClosable | DockWidgetMovable);
 
     // Load widgets
     m_widget = new QWidget(this);

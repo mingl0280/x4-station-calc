@@ -1,4 +1,3 @@
-#include <locale/string_table.h>
 #include <ui/main_window/new_factory_wizard/new_factory_wizard_central_widget.h>
 
 /**

@@ -29,12 +29,12 @@ class SplashThread : public QThread {
      *
      * @return		Exit code.
      */
-    int exitCode();
+    int exitCode() const;
 
     /**
      * @brief		Destructor.
      */
-    virtual ~SplashThread();
+    ~SplashThread() override;
 
   protected:
     /**
@@ -48,5 +48,3 @@ class SplashThread : public QThread {
      */
     void finished();
 };
-
-#include <ui/splash/splash_widget.h>

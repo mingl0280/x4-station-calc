@@ -1,14 +1,10 @@
 #pragma once
-
-#include <QtCore/QVector>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QTreeWidget>
-#include <QtWidgets/QTreeWidgetItem>
-#include <QtWidgets/QVBoxLayout>
+#include <QPushButton>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QGridLayout>
+#include <QTreeWidgetItem>
+#include <QVBoxLayout>
 
 #include <ui/main_window/action_control_dock_widget.h>
 #include <ui/main_window/station_modules_widget/station_modules_tree_widget_item.h>

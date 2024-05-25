@@ -29,7 +29,7 @@ UpdateChecker::UpdateChecker(QWidget *parent) :
     // Enable TLS.
     QSslConfiguration sslConfig = m_request.sslConfiguration();
     sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    sslConfig.setProtocol(QSsl::TlsV1SslV3);
+    sslConfig.setProtocol(QSsl::TlsV1_3OrLater);
     m_request.setSslConfiguration(sslConfig);
 
     this->connect(m_netwokAccessManager, &QNetworkAccessManager::finished, this,

@@ -13,7 +13,6 @@
 #define __GETOPT_H__
 
 /* All the headers include this file. */
-#include <crtdefs.h>
 
 #if defined(WINGETOPT_SHARED_LIB)
     #if defined(BUILDING_WINGETOPT_DLL)

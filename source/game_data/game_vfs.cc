@@ -5,9 +5,6 @@
 #include <QtCore/QDebug>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
-#include <QtCore/QMutex>
-#include <QtCore/QMutexLocker>
-#include <QtCore/QReadLocker>
 #include <QtCore/QWriteLocker>
 
 #include <common.h>

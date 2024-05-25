@@ -4,10 +4,6 @@
 #include <memory>
 
 #include <QtCore/QMap>
-#include <QtCore/QMutex>
-#include <QtCore/QObject>
-#include <QtCore/QVector>
-#include <QtCore/QXmlStreamReader>
 
 #include <common.h>
 #include <interfaces/i_load_factory_func.h>
@@ -26,7 +22,6 @@ class GameComponents :
               ::std::shared_ptr<GameVFS>,
               ::std::function<void(const QString &)>);
 
-  private:
     QMap<QString, QString> m_components; ///< Components
 
   protected:
@@ -50,7 +45,14 @@ class GameComponents :
     /**
      * @brief		Destructor.
      */
-    virtual ~GameComponents();
+    ~GameComponents() override;
+
+    /* Constructors & assign operators */
+    GameComponents(const GameComponents& other) = default;
+    GameComponents(GameComponents&& other) = default;
+    GameComponents& operator=(const GameComponents& other) = default;
+    GameComponents& operator=(GameComponents&& other) = default;   
+
 
   protected:
     /**

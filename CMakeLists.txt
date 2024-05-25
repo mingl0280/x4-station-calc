@@ -1,8 +1,6 @@
-cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.16.0 FATAL_ERROR)
 
 set (CMAKE_CXX_STANDARD 17) 
-
-cmake_policy(SET CMP0054 NEW)
 
 # Project
 project (x4-station-calc)
@@ -25,19 +23,13 @@ message (STATUS "Host System - ${CMAKE_HOST_SYSTEM_NAME}.")
 message (STATUS "Host Processor - ${CMAKE_HOST_SYSTEM_PROCESSOR}.")
 message (STATUS "Target System - ${CMAKE_SYSTEM_NAME}.")
 message (STATUS "Target Processor - ${CMAKE_SYSTEM_PROCESSOR}.")
+set(Qt_SubVersion "6.2.0")
 
 # Environment.
 include_directories ("${CMAKE_CURRENT_SOURCE_DIR}/include")
 add_definitions ("-DQIODEVICE_BUFFERSIZE=Q_INT64_C(64 * 1024 * 1024)")
 
-if (WIN32)
-    include_directories ("${CMAKE_CURRENT_SOURCE_DIR}/3rd-party/windows")
-    add_definitions ("-DOS_WINDOWS=1")
 
-elseif (UNIX)
-    add_definitions ("-DOS_LINUX=1")
-
-endif ()
 
 # Output path.
 if (UNIX)
@@ -83,7 +75,6 @@ if (UNIX)
 
 else ()
     set (OUTPUT_SUB_DIR "${CMAKE_BUILD_TYPE}/${CMAKE_SYSTEM_NAME}/${CMAKE_SYSTEM_PROCESSOR}")
-
 endif ()
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY  "${CMAKE_CURRENT_SOURCE_DIR}/lib/${OUTPUT_SUB_DIR}")
@@ -159,7 +150,7 @@ else ()
 endif ()
 
 # Dependencies
-find_package (PythonInterp REQUIRED 3)
+find_package (Python3 COMPONENTS Interpreter)
 
 find_package (OpenSSL REQUIRED COMPONENTS SSL Crypto)
 include_directories ("${OPENSSL_INCLUDE_DIR}")
@@ -168,14 +159,19 @@ if ("${OPENSSL_VERSION}" VERSION_LESS "1.1.1")
 
 endif ()
 
-find_package (Qt5Core REQUIRED)
-find_package (Qt5Widgets REQUIRED)
-find_package (Qt5Network REQUIRED)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets Network )
+#find_package (Qt5Core REQUIRED)
+#find_package (Qt5Widgets REQUIRED)
+#find_package (Qt5Network REQUIRED)
 
-if ("${Qt5Core_VERSION}" VERSION_LESS "5.14.1")
-    message (FATAL_ERROR "The version of Qt5 must be greater than 5.14.1.")
+if (NOT Qt6_FOUND)
+    message (FATAL_ERROR "Qt6 is not found.")
+endif()
 
-endif ()
+#if ("${Qt5Core_VERSION}" VERSION_LESS "5.14.1")
+#    message (FATAL_ERROR "The version of Qt5 must be greater than 5.14.1.")
+#
+#endif ()
 
 find_package (Doxygen)
 
@@ -214,7 +210,7 @@ endif ()
 
 # Recources
 set (RESOURCE_LIST_FILE     "${CMAKE_CURRENT_SOURCE_DIR}/resource/resources.qrc")
-set (GENERATE_RESOURCE_CMD  "${PYTHON_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/generate_resource.py")
+set (GENERATE_RESOURCE_CMD  "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/generate_resource.py")
 
 file (GLOB_RECURSE RESOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/resource/*"
@@ -227,8 +223,9 @@ add_custom_command (
     DEPENDS     ${RESOURCES} "${CMAKE_CURRENT_SOURCE_DIR}/CHANGELOG" "${CMAKE_CURRENT_SOURCE_DIR}/generate_resource.py")
 
 # Qt wrappers
-qt5_wrap_cpp (WRAPPED_HEADERS ${HEADERS})
-qt5_add_resources (WRAPPED_RESOURCE "${RESOURCE_LIST_FILE}")
+qt_wrap_cpp (WRAPPED_HEADERS ${HEADERS})
+qt_add_resources (WRAPPED_RESOURCE "${RESOURCE_LIST_FILE}")
+
 
 add_executable(${PROJECT_NAME}
     ${SRC}
@@ -236,9 +233,9 @@ add_executable(${PROJECT_NAME}
     ${WRAPPED_RESOURCE})
 
 target_link_libraries(${PROJECT_NAME}
-    Qt5::Core
-    Qt5::Widgets
-    Qt5::Network
+    Qt::Core
+    Qt::Widgets
+    Qt::Network
     ${OPENSSL_LIBRARIES}
     ${OPENSSL_SSL_LIBRARY}
     ${OPENSSL_CRYPTO_LIBRARY}
@@ -249,7 +246,15 @@ if (WIN32)
         Dbghelp
         shell32
         )
+    target_include_directories(${PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/3rd-party/windows"
+        )
+endif ()
 
+if (WIN32)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC "-DOS_WINDOWS=1")
+elseif (UNIX)
+    target_compile_definitions (${PROJECT_NAME} PUBLIC "-DOS_LINUX=1")
 endif ()
 
 

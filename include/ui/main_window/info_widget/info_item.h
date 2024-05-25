@@ -2,12 +2,9 @@
 
 #include <functional>
 
-#include <QtCore/QMap>
 #include <QtWidgets/QTreeWidgetItem>
 
 #include <common/generic_string.h>
-#include <game_data/game_data.h>
-#include <locale/string_table.h>
 
 /**
  * @brief		Item in imformation widget.

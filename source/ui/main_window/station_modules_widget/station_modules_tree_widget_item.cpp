@@ -1,4 +1,3 @@
-#include <locale/string_table.h>
 #include <ui/main_window/station_modules_widget/station_modules_tree_widget_item.h>
 
 /**
