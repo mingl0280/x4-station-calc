@@ -74,6 +74,21 @@
         "zh_TW": "鏈接模塊",
         "en_US": "Connection Modules"
     },
+    "STATION_TYPE_RADAR": {
+        "zh_CN": "雷达模块",
+        "zh_TW": "雷達模塊",
+        "en_US": "Radar Modules"
+    },
+    "STATION_TYPE_PROCESSING": {
+        "zh_CN": "加工模块",
+        "zh_TW": "加工模塊",
+        "en_US": "Processing Modules"
+    },
+    "STATION_TYPE_WELFARE": {
+        "zh_CN": "福利模块",
+        "zh_TW": "福利模塊",
+        "en_US": "Welfare Modules"
+    },
     "STR_PRODUCT_NOT_FOUND": {
         "zh_CN": "产品未找到!",
         "zh_TW": "產品未找到!",

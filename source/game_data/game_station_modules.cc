@@ -10,40 +10,17 @@
 
 QMap<QString, GameStationModules::StationModule::StationModuleClass>
 GameStationModules::_classMap = {
-    {
-        "buildmodule",
-        GameStationModules::StationModule::StationModuleClass::BuildModule,
-    },
-    {
-        "connectionmodule",
-        GameStationModules::StationModule::StationModuleClass::
-            ConnectionModule,
-    },
-    {
-        "defencemodule",
-        GameStationModules::StationModule::StationModuleClass::
-            DefenceModule,
-    },
-    {
-        "dockarea",
-        GameStationModules::StationModule::StationModuleClass::Dockarea,
-    },
-    {
-        "pier",
-        GameStationModules::StationModule::StationModuleClass::Dockarea,
-    },
-    {
-        "habitation",
-        GameStationModules::StationModule::StationModuleClass::Habitation,
-    },
-    {
-        "production",
-        GameStationModules::StationModule::StationModuleClass::Production,
-    },
-    {
-        "storage",
-        GameStationModules::StationModule::StationModuleClass::Storage,
-    },
+    {"buildmodule", GameStationModules::StationModule::StationModuleClass::BuildModule},
+    {"connectionmodule", GameStationModules::StationModule::StationModuleClass::ConnectionModule},
+    {"defencemodule", GameStationModules::StationModule::StationModuleClass::DefenceModule},
+    {"dockarea", GameStationModules::StationModule::StationModuleClass::Dockarea},
+    {"pier", GameStationModules::StationModule::StationModuleClass::Dockarea},
+    {"habitation", GameStationModules::StationModule::StationModuleClass::Habitation},
+    {"production", GameStationModules::StationModule::StationModuleClass::Production},
+    {"storage", GameStationModules::StationModule::StationModuleClass::Storage},
+    {"welfaremodule", GameStationModules::StationModule::StationModuleClass::Welfare},
+    {"radar", GameStationModules::StationModule::StationModuleClass::Radar},
+    {"processingmodule", GameStationModules::StationModule::StationModuleClass::Processing}
 };
 
 /**
@@ -285,6 +262,20 @@ bool GameStationModules::onStartElementInMacrosOfModuleMacro(
     const QString& name,
     const QMap<QString, QString>& attr)
 {
+    using std::placeholders::_1;
+    using std::placeholders::_2;
+    using std::placeholders::_3;
+    using std::placeholders::_4;
+    using std::placeholders::_5;
+    using std::shared_ptr;
+    using std::unique_ptr;
+    using std::bind;
+    using std::any_cast;
+    using std::make_shared;
+    using std::move;
+    using std::round;
+    using std::static_pointer_cast;
+    
     ::std::unique_ptr<XMLLoader::Context> context
         = XMLLoader::Context::create();
 
@@ -322,426 +313,133 @@ bool GameStationModules::onStartElementInMacrosOfModuleMacro(
                             ::std::shared_ptr<GameTexts> texts
                                 = ::std::any_cast<::std::shared_ptr<GameTexts>>(
                                     loader["texts"]);
-                            qDebug() << "module :{";
+                            qDebug() << "module :{"
+                                     << "macro:" << module->macro
+                                     << "component:" << module->component
+                                     << "name:" << texts->text(module->name)
+                                     << "description:" << texts->text(module->description);
+                            qDebug() << "class:" << [&]() {
+                                switch (module->moduleClass) {
+                                    case StationModule::StationModuleClass::Unknow: return "Unknow";
+                                    case StationModule::StationModuleClass::BuildModule: return "BuildModule";
+                                    case StationModule::StationModuleClass::ConnectionModule: return "ConnectionModule";
+                                    case StationModule::StationModuleClass::DefenceModule: return "DefenceModule";
+                                    case StationModule::StationModuleClass::Dockarea: return "Dockarea";
+                                    case StationModule::StationModuleClass::Habitation: return "Habitation";
+                                    case StationModule::StationModuleClass::Production: return "Production";
+                                    case StationModule::StationModuleClass::Storage: return "Storage";
+                                    case StationModule::StationModuleClass::Welfare: return "Welfare";
+                                    case StationModule::StationModuleClass::Radar: return "Radar";
+                                    case StationModule::StationModuleClass::Processing: return "Processing";
+                                    default: return "Unknown";
+                                }
+                            }();
                             qDebug() << "    "
-                                << "macro           :" << module->macro;
+                                    << "races:" << (module->racialLimited ? module->races : QSet<QString>{"generic"})
+                                    << "hull:" << module->hull
+                                    << "explosiondamage:" << module->explosiondamage;
                             qDebug() << "    "
-                                << "component       :" << module->component;
-                            qDebug()
-                                << "    "
-                                << "name            :" << texts->text(module->name);
-                            qDebug() << "    "
-                                << "description     :"
-                                << texts->text(module->description);
-                            switch (module->moduleClass) {
-                                case StationModule::StationModuleClass::Unknow:
-                                    qDebug() << "    "
-                                        << "class           : "
-                                        << "Unknow";
-                                    break;
-
-                                case StationModule::StationModuleClass::BuildModule:
-                                    qDebug() << "    "
-                                        << "class           : "
-                                        << "BuildModule";
-                                    break;
-
-                                    case StationModule::StationModuleClass::
-                                    ConnectionModule:
-                                        qDebug() << "    "
-                                            << "class           : "
-                                            << "ConnectionModule";
-                                        break;
-
-                                        case StationModule::StationModuleClass::
-                                        DefenceModule:
-                                            qDebug() << "    "
-                                                << "class           : "
-                                                << "DefenceModule";
-                                            break;
-
-                                        case StationModule::StationModuleClass::Dockarea:
-                                            qDebug() << "    "
-                                                << "class           : "
-                                                << "Dockarea";
-                                            break;
-
-                                        case StationModule::StationModuleClass::Habitation:
-                                            qDebug() << "    "
-                                                << "class           : "
-                                                << "Habitation";
-                                            break;
-
-                                        case StationModule::StationModuleClass::Production:
-                                            qDebug() << "    "
-                                                << "class           : "
-                                                << "Production";
-                                            break;
-
-                                        case StationModule::StationModuleClass::Storage:
-                                            qDebug() << "    "
-                                                << "class           : "
-                                                << "Storage";
-                                            break;
-                            }
-                            if (module->racialLimited) {
-                                qDebug() << "    "
-                                    << "races           : " << module->races;
-                            }
-                            else {
-                                qDebug() << "    "
-                                    << "races           : "
-                                    << "generic";
-                            }
-                            qDebug() << "    "
-                                << "hull            : " << module->hull;
-                            qDebug()
-                                << "    "
-                                << "explosiondamage : " << module->explosiondamage;
-                            qDebug() << "    "
-                                << "propertues      : {";
-                            for (auto& baseProperty : module->properties) {
+                                    << "properties: {";
+                            for (auto &baseProperty : module->properties) {
                                 switch (baseProperty->type) {
-                                    case Property::Type::MTurret: {
-                                        ::std::shared_ptr<HasMTurret> property
-                                            = ::std::static_pointer_cast<
-                                            HasMTurret>(baseProperty);
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "m turret           : "
-                                            << property->count;
-                                    } break;
-
-                                    case Property::Type::MShield: {
-                                        ::std::shared_ptr<HasMShield> property
-                                            = ::std::static_pointer_cast<
-                                            HasMShield>(baseProperty);
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "m shield           : "
-                                            << property->count;
-                                    } break;
-
-                                    case Property::Type::LTurret: {
-                                        ::std::shared_ptr<HasLTurret> property
-                                            = ::std::static_pointer_cast<
-                                            HasLTurret>(baseProperty);
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "l turret           : "
-                                            << property->count;
-                                    } break;
-
-                                    case Property::Type::LShield: {
-                                        ::std::shared_ptr<HasLShield> property
-                                            = ::std::static_pointer_cast<
-                                            HasLShield>(baseProperty);
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "l shield           : "
-                                            << property->count;
-                                    } break;
-
-                                    case Property::Type::SDock: {
-                                        ::std::shared_ptr<HasSDock> property
-                                            = ::std::static_pointer_cast<HasSDock>(
-                                                baseProperty);
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "s docking bay      : "
-                                            << property->count;
-                                    } break;
-
-                                    case Property::Type::SShipCargo: {
-                                        ::std::shared_ptr<HasSShipCargo> property
-                                            = ::std::static_pointer_cast<
-                                            HasSShipCargo>(baseProperty);
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "s ship cargo       : "
-                                            << property->capacity;
-                                    } break;
-
-                                    case Property::Type::MDock: {
-                                        ::std::shared_ptr<HasMDock> property
-                                            = ::std::static_pointer_cast<HasMDock>(
-                                                baseProperty);
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "m docking bay      : "
-                                            << property->count;
-                                    } break;
-
-                                    case Property::Type::MShipCargo: {
-                                        ::std::shared_ptr<HasMShipCargo> property
-                                            = ::std::static_pointer_cast<
-                                            HasMShipCargo>(baseProperty);
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "m ship cargo       : "
-                                            << property->capacity;
-                                    } break;
-
-                                    case Property::Type::LDock: {
-                                        ::std::shared_ptr<HasLDock> property
-                                            = ::std::static_pointer_cast<HasLDock>(
-                                                baseProperty);
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "l docking bay      : "
-                                            << property->count;
-                                    } break;
-
-                                    case Property::Type::XLDock: {
-                                        ::std::shared_ptr<HasXLDock> property
-                                            = ::std::static_pointer_cast<HasXLDock>(
-                                                baseProperty);
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "xl docking bay     : "
-                                            << property->count;
-                                    } break;
-
-                                    case Property::Type::LXLDock: {
-                                        ::std::shared_ptr<HasLXLDock> property
-                                            = ::std::static_pointer_cast<
-                                            HasLXLDock>(baseProperty);
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "l/xl docking bay   : "
-                                            << property->count;
-                                    } break;
-
-                                    case Property::Type::SLaunchTube: {
-                                        ::std::shared_ptr<HasSLaunchTube> property
-                                            = ::std::static_pointer_cast<
-                                            HasSLaunchTube>(baseProperty);
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "s launch tube      : "
-                                            << property->count;
-                                    } break;
-
-                                    case Property::Type::MLaunchTube: {
-                                        ::std::shared_ptr<HasMLaunchTube> property
-                                            = ::std::static_pointer_cast<
-                                            HasMLaunchTube>(baseProperty);
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "m launch tube      : "
-                                            << property->count;
-                                    } break;
-
-                                    case Property::Type::SupplyWorkforce: {
-                                        ::std::shared_ptr<SupplyWorkforce> property
-                                            = ::std::static_pointer_cast<
-                                            SupplyWorkforce>(baseProperty);
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "supply workforce   : {";
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "    "
-                                            << "workforce : "
-                                            << property->workforce;
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "    "
-                                            << "supplies  : [";
-                                        for (auto& resource :
-                                            property->supplyInfo->resources) {
-                                            qDebug() << "    "
-                                                << "    "
-                                                << "    "
-                                                << "    "
-                                                << "{";
-                                            qDebug() << "    "
-                                                << "    "
-                                                << "    "
-                                                << "    "
-                                                << "    "
-                                                << "id     : " << resource->id;
-                                            qDebug()
-                                                << "    "
-                                                << "    "
-                                                << "    "
-                                                << "    "
-                                                << "    "
-                                                << "amount : "
-                                                << ::round((
-                                                    double)(((long double)
-                                                        resource
-                                                        ->amount)
-                                                        * property->workforce
-                                                        * 3600
-                                                        / property
-                                                        ->supplyInfo
-                                                        ->amount
-                                                        / property
-                                                        ->supplyInfo
-                                                        ->time))
-                                                << "/h";
-                                            qDebug() << "    "
-                                                << "    "
-                                                << "    "
-                                                << "    "
-                                                << "}";
-                                        }
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "    "
-                                            << "]";
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "}";
-                                    } break;
-
-                                    case Property::Type::RequireWorkforce: {
-                                        ::std::shared_ptr<RequireWorkforce> property
-                                            = ::std::static_pointer_cast<
-                                            RequireWorkforce>(baseProperty);
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "workforce required : "
-                                            << property->workforce;
-                                    } break;
-
-                                    case Property::Type::SupplyProduct: {
-                                        ::std::shared_ptr<SupplyProduct> property
-                                            = ::std::static_pointer_cast<
-                                            SupplyProduct>(baseProperty);
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "product            : {";
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "    "
-                                            << "id               :"
-                                            << property->product;
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "    "
-                                            << "time per round   :"
-                                            << property->productionInfo->time
-                                            << "s";
-                                        qDebug()
-                                            << "    "
-                                            << "    "
-                                            << "    "
-                                            << "amount per round :"
-                                            << property->productionInfo->amount
-                                            << " - "
-                                            << ::round(
-                                                property->productionInfo->amount
-                                                * (property->productionInfo
-                                                    ->workEffect
-                                                    + 1.0));
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "    "
-                                            << "resources        : [";
-                                        for (auto& resource :
-                                            property->productionInfo->resources) {
-                                            qDebug() << "    "
-                                                << "    "
-                                                << "    "
-                                                << "    "
-                                                << "{";
-                                            qDebug() << "    "
-                                                << "    "
-                                                << "    "
-                                                << "    "
-                                                << "    "
-                                                << "id     : " << resource->id;
-                                            qDebug()
-                                                << "    "
-                                                << "    "
-                                                << "    "
-                                                << "    "
-                                                << "    "
-                                                << "amount : "
-                                                << ::round((
-                                                    double)(((long double)
-                                                        resource
-                                                        ->amount)
-                                                        * 3600
-                                                        / property
-                                                        ->productionInfo
-                                                        ->time))
-                                                << "/h - "
-                                                << ::round(
-                                                    (double)(((long double)
-                                                        resource
-                                                        ->amount)
-                                                        * 3600
-                                                        / property
-                                                        ->productionInfo
-                                                        ->time)
-                                                    * (1.0
-                                                        + property->productionInfo
-                                                        ->workEffect))
-                                                << "/h";
-                                            qDebug() << "    "
-                                                << "    "
-                                                << "    "
-                                                << "    "
-                                                << "}";
-                                        }
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "    "
-                                            << "]";
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "}";
-                                    } break;
-
-                                    case Property::Type::Cargo: {
-                                        ::std::shared_ptr<HasCargo> property
-                                            = ::std::static_pointer_cast<HasCargo>(
-                                                baseProperty);
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "cargo              : {";
-                                        switch (property->cargoType) {
-                                            case GameWares::TransportType::
-                                            Container:
-                                                qDebug() << "    "
-                                                    << "    "
-                                                    << "    "
-                                                    << "type : Container";
-                                                break;
-
-                                            case GameWares::TransportType::Solid:
-                                                qDebug() << "    "
-                                                    << "    "
-                                                    << "    "
-                                                    << "type : Solid";
-                                                break;
-
-                                            case GameWares::TransportType::Liquid:
-                                                qDebug() << "    "
-                                                    << "    "
-                                                    << "    "
-                                                    << "type : Liquid";
-                                                break;
-
-                                            case GameWares::TransportType::Unknow:
-                                                qDebug() << "    "
-                                                    << "    "
-                                                    << "    "
-                                                    << "type : Unknow";
-                                                break;
-                                        }
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "    "
-                                            << "size : " << property->cargoSize
-                                            << " m^3";
-                                        qDebug() << "    "
-                                            << "    "
-                                            << "}";
-                                    } break;
+                                case Property::Type::MTurret: {
+                                    shared_ptr<HasMTurret> property = static_pointer_cast<HasMTurret>(baseProperty);
+                                    qDebug() << "    " << "    " << "m turret           : " << property->count;
+                                } break;
+                                case Property::Type::MShield: {
+                                    shared_ptr<HasMShield> property = static_pointer_cast<HasMShield>(baseProperty);
+                                    qDebug() << "    " << "    " << "m shield           : " << property->count;
+                                } break;
+                                case Property::Type::LTurret: {
+                                    shared_ptr<HasLTurret> property = static_pointer_cast<HasLTurret>(baseProperty);
+                                    qDebug() << "    " << "    " << "l turret           : " << property->count;
+                                } break;
+                                case Property::Type::LShield: {
+                                    shared_ptr<HasLShield> property = static_pointer_cast<HasLShield>(baseProperty);
+                                    qDebug() << "    " << "    " << "l shield           : " << property->count;
+                                } break;
+                                case Property::Type::SDock: {
+                                    shared_ptr<HasSDock> property = static_pointer_cast<HasSDock>(baseProperty);
+                                    qDebug() << "    " << "    " << "s docking bay      : " << property->count;
+                                } break;
+                                case Property::Type::SShipCargo: {
+                                    shared_ptr<HasSShipCargo> property = static_pointer_cast<HasSShipCargo>(baseProperty);
+                                    qDebug() << "    " << "    " << "s ship cargo       : " << property->capacity;
+                                } break;
+                                case Property::Type::MDock: {
+                                    shared_ptr<HasMDock> property = static_pointer_cast<HasMDock>(baseProperty);
+                                    qDebug() << "    " << "    " << "m docking bay      : " << property->count;
+                                } break;
+                                case Property::Type::MShipCargo: {
+                                    shared_ptr<HasMShipCargo> property = static_pointer_cast<HasMShipCargo>(baseProperty);
+                                    qDebug() << "    " << "    " << "m ship cargo       : " << property->capacity;
+                                } break;
+                                case Property::Type::LDock: {
+                                    shared_ptr<HasLDock> property = static_pointer_cast<HasLDock>(baseProperty);
+                                    qDebug() << "    " << "    " << "l docking bay      : " << property->count;
+                                } break;
+                                case Property::Type::XLDock: {
+                                    shared_ptr<HasXLDock> property = static_pointer_cast<HasXLDock>(baseProperty);
+                                    qDebug() << "    " << "    " << "xl docking bay     : " << property->count;
+                                } break;
+                                case Property::Type::LXLDock: {
+                                    shared_ptr<HasLXLDock> property = static_pointer_cast<HasLXLDock>(baseProperty);
+                                    qDebug() << "    " << "    " << "l/xl docking bay   : " << property->count;
+                                } break;
+                                case Property::Type::SLaunchTube: {
+                                    shared_ptr<HasSLaunchTube> property = static_pointer_cast<HasSLaunchTube>(baseProperty);
+                                    qDebug() << "    " << "    " << "s launch tube      : " << property->count;
+                                } break;
+                                case Property::Type::MLaunchTube: {
+                                    shared_ptr<HasMLaunchTube> property = static_pointer_cast<HasMLaunchTube>(baseProperty);
+                                    qDebug() << "    " << "    " << "m launch tube      : " << property->count;
+                                } break;
+                                case Property::Type::SupplyWorkforce: {
+                                    shared_ptr<SupplyWorkforce> property = static_pointer_cast<SupplyWorkforce>(baseProperty);
+                                    qDebug() << "    " << "    " << "supply workforce   : {";
+                                    qDebug() << "    " << "    " << "    " << "workforce : " << property->workforce;
+                                    qDebug() << "    " << "    " << "    " << "supplies  : [";
+                                    for (auto &resource : property->supplyInfo->resources) {
+                                        qDebug() << "    " << "    " << "    " << "    " << "{";
+                                        qDebug() << "    " << "    " << "    " << "    " << "    " << "id     : " << resource->id;
+                                        qDebug() << "    " << "    " << "    " << "    " << "    " << "amount : " << ::round((double)(((long double)resource->amount) * property->workforce * 3600 / property->supplyInfo->amount / property->supplyInfo->time)) << "/h";
+                                        qDebug() << "    " << "    " << "    " << "    " << "}";
+                                    }
+                                    qDebug() << "    " << "    " << "    " << "]";
+                                    qDebug() << "    " << "    " << "}";
+                                } break;
+                                case Property::Type::RequireWorkforce: {
+                                    shared_ptr<RequireWorkforce> property = static_pointer_cast<RequireWorkforce>(baseProperty);
+                                    qDebug() << "    " << "    " << "workforce required : " << property->workforce;
+                                } break;
+                                case Property::Type::SupplyProduct: {
+                                    shared_ptr<SupplyProduct> property = static_pointer_cast<SupplyProduct>(baseProperty);
+                                    qDebug() << "    " << "    " << "product            : {";
+                                    qDebug() << "    " << "    " << "    " << "id               :" << property->product;
+                                    qDebug() << "    " << "    " << "    " << "time per round   :" << property->productionInfo->time << "s";
+                                    qDebug() << "    " << "    " << "    " << "amount per round :" << property->productionInfo->amount << " - " << ::round(property->productionInfo->amount * (property->productionInfo->workEffect + 1.0));
+                                    qDebug() << "    " << "    " << "    " << "resources        : [";
+                                    for (auto &resource : property->productionInfo->resources) {
+                                        qDebug() << "    " << "    " << "    " << "    " << "{";
+                                        qDebug() << "    " << "    " << "    " << "    " << "    " << "id     : " << resource->id;
+                                        qDebug() << "    " << "    " << "    " << "    " << "    " << "amount : " << ::round((double)(((long double)resource->amount) * 3600 / property->productionInfo->time)) << "/h - " << ::round((double)(((long double)resource->amount) * 3600 / property->productionInfo->time) * (1.0 + property->productionInfo->workEffect)) << "/h";
+                                        qDebug() << "    " << "    " << "    " << "    " << "}";
+                                    }
+                                    qDebug() << "    " << "    " << "    " << "]";
+                                    qDebug() << "    " << "    " << "}";
+                                } break;
+                                case Property::Type::Cargo: {
+                                    shared_ptr<HasCargo> property = static_pointer_cast<HasCargo>(baseProperty);
+                                    qDebug() << "    " << "    " << "cargo              : {";
+                                    switch (property->cargoType) {
+                                    case GameWares::TransportType::Container: qDebug() << "    " << "    " << "    " << "type : Container"; break;
+                                    case GameWares::TransportType::Solid: qDebug() << "    " << "    " << "    " << "type : Solid"; break;
+                                    case GameWares::TransportType::Liquid: qDebug() << "    " << "    " << "    " << "type : Liquid"; break;
+                                    case GameWares::TransportType::Unknow: qDebug() << "    " << "    " << "    " << "type : Unknow"; break;
+                                    }
+                                    qDebug() << "    " << "    " << "    " << "size : " << property->cargoSize << " m^3";
+                                    qDebug() << "    " << "    " << "}";
+                                } break;
                                 }
                             }
                             qDebug() << "    "

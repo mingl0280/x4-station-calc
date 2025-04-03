@@ -202,66 +202,70 @@ void InfoWidget::updateModule(const QString &macro)
     QTreeWidgetItem *typeItem = nullptr;
     switch (module->moduleClass) {
         case GameStationModules::StationModule::StationModuleClass::BuildModule:
-            typeItem
-                = new InfoItem(::std::unique_ptr<GenericString>(
-                                   new LocaleString("STR_INFO_STATION_TYPE")),
-                               ::std::unique_ptr<GenericString>(
-                                   new LocaleString("STATION_TYPE_BUILD")));
+            typeItem = new InfoItem(
+                std::unique_ptr<GenericString>(new LocaleString("STR_INFO_STATION_TYPE")),
+                std::unique_ptr<GenericString>(new LocaleString("STATION_TYPE_BUILD")));
             break;
 
-        case GameStationModules::StationModule::StationModuleClass::
-            ConnectionModule:
-            typeItem
-                = new InfoItem(::std::unique_ptr<GenericString>(
-                                   new LocaleString("STR_INFO_STATION_TYPE")),
-                               ::std::unique_ptr<GenericString>(
-                                   new LocaleString("STATION_TYPE_CONNECT")));
+        case GameStationModules::StationModule::StationModuleClass::ConnectionModule:
+            typeItem = new InfoItem(
+                std::unique_ptr<GenericString>(new LocaleString("STR_INFO_STATION_TYPE")),
+                std::unique_ptr<GenericString>(new LocaleString("STATION_TYPE_CONNECT")));
             break;
 
-        case GameStationModules::StationModule::StationModuleClass::
-            DefenceModule:
-            typeItem
-                = new InfoItem(::std::unique_ptr<GenericString>(
-                                   new LocaleString("STR_INFO_STATION_TYPE")),
-                               ::std::unique_ptr<GenericString>(
-                                   new LocaleString("STATION_TYPE_DEFENCE")));
+        case GameStationModules::StationModule::StationModuleClass::DefenceModule:
+            typeItem = new InfoItem(
+                std::unique_ptr<GenericString>(new LocaleString("STR_INFO_STATION_TYPE")),
+                std::unique_ptr<GenericString>(new LocaleString("STATION_TYPE_DEFENCE")));
             break;
 
         case GameStationModules::StationModule::StationModuleClass::Dockarea:
-            typeItem
-                = new InfoItem(::std::unique_ptr<GenericString>(
-                                   new LocaleString("STR_INFO_STATION_TYPE")),
-                               ::std::unique_ptr<GenericString>(
-                                   new LocaleString("STATION_TYPE_DOCK")));
+            typeItem = new InfoItem(
+                std::unique_ptr<GenericString>(new LocaleString("STR_INFO_STATION_TYPE")),
+                std::unique_ptr<GenericString>(new LocaleString("STATION_TYPE_DOCK")));
             break;
 
         case GameStationModules::StationModule::StationModuleClass::Habitation:
             typeItem = new InfoItem(
-                ::std::unique_ptr<GenericString>(
-                    new LocaleString("STR_INFO_STATION_TYPE")),
-                ::std::unique_ptr<GenericString>(
-                    new LocaleString("STATION_TYPE_HABITATION")));
+                std::unique_ptr<GenericString>(new LocaleString("STR_INFO_STATION_TYPE")),
+                std::unique_ptr<GenericString>(new LocaleString("STATION_TYPE_HABITATION")));
             break;
 
         case GameStationModules::StationModule::StationModuleClass::Production:
             typeItem = new InfoItem(
-                ::std::unique_ptr<GenericString>(
-                    new LocaleString("STR_INFO_STATION_TYPE")),
-                ::std::unique_ptr<GenericString>(
-                    new LocaleString("STATION_TYPE_PRODUCTION")));
+                std::unique_ptr<GenericString>(new LocaleString("STR_INFO_STATION_TYPE")),
+                std::unique_ptr<GenericString>(new LocaleString("STATION_TYPE_PRODUCTION")));
+            break;
+        
+        case GameStationModules::StationModule::StationModuleClass::Radar:
+            typeItem = new InfoItem(
+                std::unique_ptr<GenericString>(new LocaleString("STR_INFO_STATION_TYPE")),
+                std::unique_ptr<GenericString>(new LocaleString("STATION_TYPE_RADAR")));
+            break;
+
+        case GameStationModules::StationModule::StationModuleClass::Processing:
+            typeItem = new InfoItem(
+                std::unique_ptr<GenericString>(new LocaleString("STR_INFO_STATION_TYPE")),
+                std::unique_ptr<GenericString>(new LocaleString("STATION_TYPE_PROCESSING")));
+            break;
+
+        case GameStationModules::StationModule::StationModuleClass::Welfare:
+            typeItem = new InfoItem(
+                std::unique_ptr<GenericString>(new LocaleString("STR_INFO_STATION_TYPE")),
+                std::unique_ptr<GenericString>(new LocaleString("STATION_TYPE_WELFARE")));
             break;
 
         case GameStationModules::StationModule::StationModuleClass::Storage:
-            typeItem
-                = new InfoItem(::std::unique_ptr<GenericString>(
-                                   new LocaleString("STR_INFO_STATION_TYPE")),
-                               ::std::unique_ptr<GenericString>(
-                                   new LocaleString("STATION_TYPE_STORAGE")));
+            typeItem = new InfoItem(
+                std::unique_ptr<GenericString>(new LocaleString("STR_INFO_STATION_TYPE")),
+                std::unique_ptr<GenericString>(new LocaleString("STATION_TYPE_STORAGE")));
             break;
 
         default:
+            typeItem = nullptr;
             break;
     }
+
     if (typeItem != nullptr) {
         m_treeInfo->addTopLevelItem(typeItem);
     }

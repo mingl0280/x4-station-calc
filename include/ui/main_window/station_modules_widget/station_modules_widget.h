@@ -49,6 +49,9 @@ class StationModulesWidget : public ActionControlDockWidget {
     QTreeWidgetItem *m_itemHabitation; ///< Habitation modules root item.
     QTreeWidgetItem *m_itemDefence;    ///< Defence modules root item.
     QTreeWidgetItem *m_itemConnect;    ///< Connect modules root item.
+    QTreeWidgetItem *m_itemWelfare;    ///< Welfare modules root item.
+    QTreeWidgetItem *m_itemRadar;      ///< Radar modules root item.
+    QTreeWidgetItem *m_itemProcessing; ///< Processing modules root item.
 
     QVector<StationModulesTreeWidgetItem *> m_moduleItems; ///< Module items.
     QSet<QString>                           m_races;       ///< Races.

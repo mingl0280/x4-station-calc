@@ -190,24 +190,41 @@ void SplashWidget::closeEvent(QCloseEvent *event)
 void SplashWidget::setText(QString text)
 {
     /// Split lines.
-    int         lineWidth = this->width() - MARGIN - MARGIN;
+    int lineWidth = this->width() - MARGIN - MARGIN;
     QStringList lines;
-    if (! (text.isNull() || text.isEmpty())) {
+    if (!(text.isNull() || text.isEmpty()))
+    {
         QString line("");
-        for (auto &c : text) {
-            if (c == '\n') {
+        for (auto &c : text)
+        {
+            if (c == '\n')
+            {
                 lines.append(line);
                 line = "";
-            } else {
+            }
+            else
+            {
                 line.append(c);
-                if (this->fontMetrics().horizontalAdvance(line) > lineWidth) {
-                    line.remove(line.size() - 1, 1);
-                    lines.append(line);
-                    line = c;
+                try
+                {
+                    if (this->fontMetrics().horizontalAdvance(line) > lineWidth)
+                    {
+                        line.remove(line.size() - 1, 1);
+                        lines.append(line);
+                        line = c;
+                    }
+                }
+                catch (const std::exception &e)
+                {
+                    /// Handle exception
+                    qDebug() << "Exception in fontMetrics: " << e.what();
+                    qDebug() << "Line: " << line;
+                    line = "";
                 }
             }
         }
-        if (line != "") {
+        if (line != "")
+        {
             lines.append(line);
         }
     }

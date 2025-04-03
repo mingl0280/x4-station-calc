@@ -3,6 +3,8 @@
 
 
 #include <QtWidgets/QApplication>
+#include <QtGui/QFontDatabase>
+#include <QtCore/QStandardPaths>
 
 #include <common.h>
 #include <config.h>
@@ -41,6 +43,56 @@ int firstRun()
 }
 
 /**
+ * @brief Pick a safe font.
+ * 
+ * @return QFont 
+ */
+QFont pickSafeFontForLocale()
+{
+    QLocale locale;
+    QFontDatabase fontDb;
+    QStringList availableFonts = fontDb.families();
+
+    // Map language to preferred fonts
+    const QMap<QLocale::Language, QStringList> languageFontMap = {
+        { QLocale::Chinese,   { "microsoft yahei ui light", "SimSun", "Noto Sans SC", "microsoft yahei" } },
+        { QLocale::Japanese,  { "Yu Gothic", "MS UI Gothic", "Noto Sans JP" } },
+        { QLocale::Korean,    { "Malgun Gothic", "Noto Sans KR" } },
+        { QLocale::Russian,   { "Segoe UI", "Arial" } },
+        { QLocale::English,   { "Segoe UI", "Arial", "Helvetica" } },
+        { QLocale::German,    { "Segoe UI", "Arial" } },
+        { QLocale::French,    { "Segoe UI", "Arial" } },
+        { QLocale::Arabic,    { "Segoe UI", "Arial", "Amiri" } },
+        { QLocale::Hebrew,    { "Segoe UI", "Arial", "David" } },
+        // Add more as needed...
+    };
+
+    QStringList preferredFonts = languageFontMap.value(locale.language(), {
+        "Segoe UI", "Arial", "Helvetica", "Sans Serif"
+    });
+
+    QStringList normalizedAvailableFonts;
+    for (const QString &f : availableFonts)
+        normalizedAvailableFonts << f.toLower();
+
+    for (const QString &f : normalizedAvailableFonts)
+        qDebug() << f;
+
+    for (const QString &fontName : preferredFonts)
+    {
+        if (normalizedAvailableFonts.contains(fontName.toLower()))
+        {
+            qDebug() << "Using font:" << fontName;
+            return QFont(fontName, 10);
+        }
+    }
+
+    qDebug() << "No preferred fonts found. Falling back to default.";
+    return QApplication::font();
+}
+
+
+/**
  * @brief		Entery.
  *
  * @param[in]	argc		Count of arguments.
@@ -63,7 +115,13 @@ int main(int argc, char *argv[])
     int          fakeArgc   = 1;
     char *       fakeArgv[] = {argv[0], NULL};
     QApplication app(fakeArgc, fakeArgv);
+    app.setFont(pickSafeFontForLocale());
+    QFontDatabase fdb;
+    qDebug() << "Fonts:" << fdb.families();
+    qDebug() << "Fonts Location: " << QStandardPaths::writableLocation(QStandardPaths::FontsLocation);
+    
     app.setApplicationName("X4 Station Calculator");
+    
 
     // Initialize.
     if (Global::initialize(argc, argv, exitCode) == nullptr) {

@@ -98,7 +98,11 @@ class GameStationModules :
             Dockarea,         ///< Dockarea.
             Habitation,       ///< Habitation,
             Production,       ///< Production,
-            Storage           ///< Storage.
+            Storage,          ///< Storage,
+            Processing,       ///< ProcessingModule,
+            Welfare,          ///< Welfare Module,
+            Radar,            ///< Radar Module,
+
         };
 
         QString            macro;           ///< Macro of the module.
