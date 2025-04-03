@@ -9,7 +9,7 @@ Alert: Processing modules is a mystery for me so that part is not working.
 * Qt6(Tested: Qt 6.2.0. Environment variables `QT` and `Path` must be setted on windows)
 * OpenSSL
 * cmake
-* gcc/mingw/visual studio 2019
+* gcc/mingw/visual studio
 * doxygen(Optional)
 
 
