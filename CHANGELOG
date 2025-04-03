@@ -1,3 +1,8 @@
+v1.0.6
+	Updated Qt version
+	Adding some extra modules
+	Make it work in most languages post upgrade. 
+
 v1.0.5
     Changed the regular-expressions to match cat files to ignore the mods whitch installed in a wrong place.
     Added new factory wizard.

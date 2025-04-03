@@ -1,13 +1,15 @@
 # X4:Foundnations Station Editor
 
+Alert: Processing modules is a mystery for me so that part is not working.
+
 ### How to complie
 
 #### Build requirements
 
-* Qt5(5.14.1 or above. Environment variables `QT` and `Path` must be setted on windows)
-* OpenSSL(1.1.1 or above)
+* Qt6(Tested: Qt 6.2.0. Environment variables `QT` and `Path` must be setted on windows)
+* OpenSSL
 * cmake
-* gcc/mingw/visual studio
+* gcc/mingw/visual studio 2019
 * doxygen(Optional)
 
 
@@ -15,19 +17,33 @@
 
 * Code documents can be found in `doc/` and executable files can be found in `bin/`.
 
+Note:
+Doxygen not tested. 
+
 ##### Windows
-1. `md build`
-1. `cd build`
-1. `cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=Release ..`(You should change the `-G` option to the version of the Vsiual Studio on your computer).
-1. `cmake --build . --config Release`
+```bat
+md build
+cd build
+
+REM These two lines for debug build. 
+cmake ..
+cmake --build . 
+
+REM or these two lines for release build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake --build . --config Release
+```
 
 ##### Linux
 
 ###### How to Install Dependencies
 
+Note:
+I don't use Arch so no way to tell this works or not. 
+
 1. Arch Linux
-    1. Qt5
-        1. `sudo pacman -S qt5`
+    1. Qt6
+        1. `sudo pacman -S qt6` - not sure this works or not. 
     1. OpenSSL
         1. `sudo pacman -S openssl`
     1. cmake
@@ -35,20 +51,14 @@
     1. gcc
         1. `sudo pacman -S gcc`
 1. Ubuntu
-    1. Qt5
-        1. Download and install qt5 from <https://download.qt.io/archive/qt/>(the version must be greater than 5.14.0).
-        1. Append the path of `gcc_64/lib` in your qt5 installalion path to environment variable `LD_LIBRARY_PATH`.
-        1. Set the path of `gcc_64` in your qt5 installalion path to environment variable `QT`.
-        1. Restart your computer.
-        1. Replace the 3rd command in the build commands to `cmake -DCMAKE_PREFIX_PATH=${QT} -DCMAKE_BUILD_TYPE=Release ..`.
+    1. Qt6
+        1. `sudo apt install -y build-essential libgl1-mesa-dev`
+		1. Follow this doc to install qt: [Get and Install Qt with Qt Online Installer](https://doc.qt.io/qt-6/qt-online-installation.html)
     1. OpenSSL
         1. `sudo apt-get install libssl-dev`
     1. cmake
         1. `sudo apt-get install cmake`
         1. `sudo apt-get install make`
-    1. gcc
-        1. `sudo apt-get install gcc`
-        1. `sudo apt-get install g++`
 
 ###### Build Commands
 
